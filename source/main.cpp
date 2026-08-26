@@ -6,7 +6,7 @@ int main(void) {
     //paint.setup();
 	paint.setupVideo();
 	paint.setupLayers();
-	//paint.setupTools();
+	paint.setupTools();
 
 	while (1) {
 		//paint.updateInputs();

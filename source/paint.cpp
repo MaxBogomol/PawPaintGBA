@@ -2,6 +2,11 @@
 
 #include <string>
 
+#include "language.h"
+
+#include "paint_icon.h"
+#include "paint_monochrome_icon.h"
+
 void Paint::setupVideo() {
     REG_DISPCNT = MODE_3 | BG2_ENABLE;
     irqInit();
@@ -9,14 +14,114 @@ void Paint::setupVideo() {
 }
 
 void Paint::setupLayers() {
-    clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain, whiteColor);
+    clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
     clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferCanvas, whiteColor);
 }
 
+void Paint::setupTools() {
+    brush.setup(*this);
+    eraser.setup(*this);
+
+    tools.push_back(&brush);
+    tools.push_back(&eraser);
+}
+
+void Paint::updateTools() {
+    int selectedToolOld = selectedTool;
+    bool toolChanged = false;
+
+    if (toolChanged) {
+        tools[selectedToolOld]->close(*this);
+        tools[selectedTool]->open(*this);
+        updateDrawTools = true;
+    }
+
+    if (firstFrameTool) {
+        tools[selectedTool]->open(*this);
+        firstFrameTool = false;
+    }
+
+    tools[selectedTool]->update(*this);
+}
+
 void Paint::updateVideo() {
-    drawCircleDiameter(20, 20, 10, pixelBufferMain, blackColor);
+    if (updateDrawTools) {
+        drawTools();
+        updateDrawTools = false;
+    }
+
+    if (updateDrawColors) {
+        drawColors();
+        updateDrawColors = false;
+    }
+
+    if (updateDrawPaintName) {
+        drawPaintName();
+        updateDrawPaintName = false;
+    }
+
+    if (updateDrawPaintIcon) {
+        drawPaintIcon();
+        updateDrawPaintIcon = false;
+    }
+
+    tools[selectedTool]->updateTool(*this);
+
     VBlankIntrWait();
     dmaCopy(pixelBufferMain, vid_mem, sizeof(pixelBufferMain));
+}
+
+void Paint::drawTools() {
+    clearBuffer(0, 0, SCREEN_WIDTH, getToolsYOffset(), pixelBufferMain);
+
+    int i = 0;
+    int j = 0;
+    for (int t = 0; t < (int) tools.size(); t++) {
+        tools[t]->drawIcon(*this, 4 + (i * 18), 3 + (j * 18), pixelBufferMain);
+        if (t == selectedTool) drawSquareOutline(3 + (i * 18), 2 + (j * 18), 18, 18, pixelBufferMain, blackColor);
+        i++;
+        if (i >= 13) {
+            i = 0;
+            j++;
+        }
+    }
+
+    //string toolString = string(STR_TOOL) + ": " + tools[selectedTool]->getName(*this); 
+    //drawText(3, getToolYOffset(), toolString.c_str(), pixelBufferMain, blackColor);
+}
+
+void Paint::drawColors() {
+    clearBuffer(2, 124, 90, 34, pixelBufferMain);
+
+    drawSquareOutline(2, 124, 18, 34, pixelBufferMain, blackColor);
+
+    drawSquare(3, 125, 16, 16, pixelBufferMain, selectedColor);
+    int r = (selectedColor) & 31;
+    int g = (selectedColor >> 5) & 31;
+    int b = (selectedColor >> 10) & 31;
+    //string colorString = string("RGB: ") + intToChars(r) + " " + intToChars(g) + " " + intToChars(b); 
+    //drawText(21, 161, colorString.c_str(), pixelBufferMain, blackColor);
+
+    drawSquare(3, 141, 16, 16, pixelBufferMain, selectedColorSub);
+    int rs = (selectedColorSub) & 31;
+    int gs = (selectedColorSub >> 5) & 31;
+    int bs = (selectedColorSub >> 10) & 31;
+    //string colorSubString = string("RGB: ") + intToChars(rs) + " " + intToChars(gs) + " " + intToChars(bs); 
+    //drawText(21, 177, colorSubString.c_str(), pixelBufferMain, blackColor);
+}
+
+void Paint::drawPaintName() {
+    clearBuffer(0, 111, SCREEN_WIDTH, 12, pixelBufferMain);
+    //drawText(3, 146, getPaintName(), pixelBufferMain, blackColor);
+}
+
+void Paint::drawPaintIcon() {
+    clearBuffer(SCREEN_WIDTH - 32 - 3, SCREEN_HEIGHT - 32 - 3, 32, 32, pixelBufferMain);
+    drawSprite(SCREEN_WIDTH - 32 - 3, SCREEN_HEIGHT - 32 - 3, 32, 32, getSelectedIconSprite(), pixelBufferMain);
+}
+
+u16 Paint::getSelectedColor() {
+	return selectedColor;
 }
 
 u16 Paint::getPixel(int x, int y, u16* buffer) {
@@ -135,6 +240,24 @@ void Paint::drawLine(int x0, int y0, int x1, int y1, u16* buffer, u16 color) {
     }
 }
 
+void Paint::drawSprite(int x0, int y0, int x1, int y1, int xShift, int yShift, int xSize, int ySize, const unsigned int* spriteBitmap, u16* buffer) {
+    const u16* pixels = (const u16*) spriteBitmap;
+
+    for (int y = 0; y < ySize; y++) {
+        for (int x = 0; x < xSize; x++) {
+            u16 color = pixels[x + xShift + ((y + yShift) * x1)];
+
+            if (color & BIT(15)) {
+                drawPixel(x0 + x, y0 + y, buffer, color);
+            }
+        }
+    }
+}
+
+void Paint::drawSprite(int x0, int y0, int x1, int y1, const unsigned int* spriteBitmap, u16* buffer) {
+    drawSprite(x0, y0, x1, y1, 0, 0, x1, y1, spriteBitmap, buffer);
+}
+
 u16 Paint::blendColors(u16 src, u16 dst) {
 	u8 alpha = (dst >> 15) & 1;
 	if (alpha == 1) {
@@ -228,5 +351,59 @@ void Paint::clearBuffer(int x0, int y0, int x1, int y1, u16* buffer, u16 color) 
 }
 
 void Paint::clearBuffer(int x0, int y0, int x1, int y1, u16* buffer) {
-    //clearBuffer(x0, y0, x1, y1, buffer, getSelectedThemeColor());
+    clearBuffer(x0, y0, x1, y1, buffer, getSelectedThemeColor());
+}
+
+int Paint::getToolYOffset() {
+    return 24;
+}
+
+int Paint::getToolsYOffset() {
+    return getToolYOffset() + 12;
+}
+
+int Paint::getToolsButtonsOffset() {
+    return 8;
+}
+
+u16 Paint::getThemeColor(int theme) {
+    switch (theme) {
+        case 0: return whiteColor; break;
+        case 1: return pinkFoxThemeColor; break;
+        case 2: return maidThemeColor; break;
+        case 3: return aceThemeColor; break;
+    }
+	return whiteColor;
+}
+
+u16 Paint::getSelectedThemeColor() {
+	return getThemeColor(selectedTheme);
+}
+
+const unsigned int* Paint::getIconSprite(int icon) {
+    switch (icon) {
+        case 0: return paint_iconBitmap; break;
+        case 1: return paint_monochrome_iconBitmap; break;
+    }
+	return paint_iconBitmap;
+}
+
+const unsigned int* Paint::getSelectedIconSprite() {
+	return getIconSprite(selectedIcon);
+}
+
+const char* Paint::getLanguageCode(int language) {
+    if (language >= 0 && language < (int) sizeof(languageCodes)) {
+        return languageCodes[language];
+    }
+	return "en_us";
+}
+
+const char* Paint::getSelectedLanguageCode() {
+	return getLanguageCode(selectedLanguage);
+}
+
+bool Paint::readSelectedLanguage() {
+    //string path = string("languagesPath") + "/" + getSelectedLanguageCode() + ".ini";
+    return readLanguage("");
 }

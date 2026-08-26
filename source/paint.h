@@ -6,6 +6,8 @@
 using namespace std;
 
 #include "tool.h"
+#include "brush.h"
+#include "eraser.h"
 
 #define ARGB16(a,r,g,b) (((a) << 15) | (r) | ((g) << 5) | ((b) << 10))
 
@@ -30,9 +32,19 @@ inline u16 aceThemeColor = ARGB16(1, 20, 6, 20); //#a231a2
 inline EWRAM_DATA u16 pixelBufferMain[SCREEN_WIDTH * SCREEN_HEIGHT];
 inline EWRAM_DATA u16 pixelBufferCanvas[SCREEN_WIDTH * SCREEN_HEIGHT];
 
-//inline Brush brush;
+inline Brush brush;
+inline Eraser eraser;
 
 inline const char* paintVerstion = "v0.1";
+
+inline const char* languageCodes[6] = {
+    "en_us",
+    "ru_ru",
+    "be_by",
+    "be_tar",
+    "be_by_latn",
+    "be_tar_latn"
+};
 
 struct HSV {
     int h;
@@ -42,20 +54,41 @@ struct HSV {
 
 class Paint {
     private:
+        bool firstFrameTool = true;
 
     public:
+        int selectedLanguage = 0;
+        int selectedTheme = 0;
+        int selectedIcon = 0;
+        int selectedLayer = 0;
+        int selectedTool = 0;
+        u16 selectedColor = blackColor;
+        u16 selectedColorSub = whiteColor;
 
+        bool updateDrawAll = false;
+        bool updateDrawSelectedColor = false;
+        bool updateDrawTools = true;
+        bool updateDrawColors = true;
+        bool updateDrawPaintName = true;
+        bool updateDrawPaintIcon = true;
 
         vector<Tool*> tools;
 
         //void setup();
         void setupVideo();
         void setupLayers();
-        //void setupTools();
+        void setupTools();
 
         //void updateInputs();
-        //void updateTools();
+        void updateTools();
         void updateVideo();
+
+        void drawTools();
+        void drawColors();
+        void drawPaintName();
+        void drawPaintIcon();
+
+        u16 getSelectedColor();
 
         u16 getPixel(int x, int y, u16* buffer);
 
@@ -68,6 +101,8 @@ class Paint {
         void drawCircleDiameter(int xc, int yc, int d, u16* buffer, u16 color);
         void drawCircleDiameterNoise(int xc, int yc, int d, u16* buffer, u16 color, int xSize, int ySize, int xShift, int yShift, int xOffset, int yOffset);
         void drawLine(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
+        void drawSprite(int x0, int y0, int x1, int y1, int xShift, int yShift, int xSize, int ySize, const unsigned int* spriteBitmap, u16* buffer);
+        void drawSprite(int x0, int y0, int x1, int y1, const unsigned int* spriteBitmap, u16* buffer);
 
         u16 blendColors(u16 src, u16 dst);
         u16 HSVtoRGB(int h, int s, int v);
@@ -77,4 +112,19 @@ class Paint {
 
         void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
         void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer);
+
+        int getToolYOffset();
+        int getToolsYOffset();
+        int getToolsButtonsOffset();
+
+        u16 getThemeColor(int theme);
+        u16 getSelectedThemeColor();
+
+        const unsigned int* getIconSprite(int icon);
+        const unsigned int* getSelectedIconSprite();
+
+        const char* getLanguageCode(int language);
+        const char* getSelectedLanguageCode();
+
+        bool readSelectedLanguage();
 };
