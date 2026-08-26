@@ -1,0 +1,80 @@
+#pragma once
+
+#include <gba.h>
+#include <vector>
+
+using namespace std;
+
+#include "tool.h"
+
+#define ARGB16(a,r,g,b) (((a) << 15) | (r) | ((g) << 5) | ((b) << 10))
+
+#define SCREEN_WIDTH  240
+#define SCREEN_HEIGHT 160
+
+u16* const vid_mem = (u16*) 0x06000000;
+
+inline u16 alphaColor = ARGB16(0, 0, 0, 0);
+inline u16 whiteColor = ARGB16(1, 31, 31, 31);
+inline u16 blackColor = ARGB16(1, 0, 0, 0);
+inline u16 grayColor = ARGB16(1, 15, 15, 15);
+inline u16 redColor = ARGB16(1, 31, 0, 0);
+inline u16 greenColor = ARGB16(1, 0, 31, 0);
+inline u16 blueColor = ARGB16(1, 0, 0, 31);
+inline u16 pinkColor = ARGB16(1, 31, 0, 31);
+
+inline u16 pinkFoxThemeColor = ARGB16(1, 31, 24, 25); //#fec8cf
+inline u16 maidThemeColor = ARGB16(1, 6, 5, 7); //#2e2939
+inline u16 aceThemeColor = ARGB16(1, 20, 6, 20); //#a231a2
+
+inline EWRAM_DATA u16 pixelBufferMain[SCREEN_WIDTH * SCREEN_HEIGHT];
+inline EWRAM_DATA u16 pixelBufferCanvas[SCREEN_WIDTH * SCREEN_HEIGHT];
+
+//inline Brush brush;
+
+inline const char* paintVerstion = "v0.1";
+
+struct HSV {
+    int h;
+    int s;
+    int v;
+};
+
+class Paint {
+    private:
+
+    public:
+
+
+        vector<Tool*> tools;
+
+        //void setup();
+        void setupVideo();
+        void setupLayers();
+        //void setupTools();
+
+        //void updateInputs();
+        //void updateTools();
+        void updateVideo();
+
+        u16 getPixel(int x, int y, u16* buffer);
+
+        void drawPixel(int x, int y, u16* buffer, u16 color);
+        void drawSquare(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
+        void drawSquareOutline(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
+        void drawSquareNoise(int x0, int y0, int x1, int y1, u16* buffer, u16 color, int xSize, int ySize, int xShift, int yShift, int xOffset, int yOffset);
+        void drawCircleRadius(int xc, int yc, int r, u16* buffer, u16 color);
+        void drawCircleRadiusNoise(int xc, int yc, int r, u16* buffer, u16 color, int xSize, int ySize, int xShift, int yShift, int xOffset, int yOffset);
+        void drawCircleDiameter(int xc, int yc, int d, u16* buffer, u16 color);
+        void drawCircleDiameterNoise(int xc, int yc, int d, u16* buffer, u16 color, int xSize, int ySize, int xShift, int yShift, int xOffset, int yOffset);
+        void drawLine(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
+
+        u16 blendColors(u16 src, u16 dst);
+        u16 HSVtoRGB(int h, int s, int v);
+        u16 HSVtoRGB(HSV hsv);
+        HSV RGBtoHSV(u16 color);
+        int getDitherThreshold(int x, int y, int xSize, int ySize, int xShift, int yShift);
+
+        void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
+        void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer);
+};

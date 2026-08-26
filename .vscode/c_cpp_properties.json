@@ -1,0 +1,67 @@
+{
+    "configurations": [
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/build",
+                "${config:terminal.integrated.env.windows.DEVKITPRO}/libnds/include/**",
+                "${config:terminal.integrated.env.windows.DEVKITPRO}/devkitARM/arm-none-eabi/include/**",
+                "${config:terminal.integrated.env.windows.DEVKITPRO}/calico/include/**",
+                "${config:terminal.integrated.env.windows.DEVKITPRO}/portlibs/nds/include/**"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "${config:terminal.integrated.env.windows.DEVKITPRO}/libnds/include/**",
+                    "${config:terminal.integrated.env.windows.DEVKITPRO}/devkitARM/arm-none-eabi/include/**",
+                    "${config:terminal.integrated.env.windows.DEVKITPRO}/calico/include/**",
+                    "${config:terminal.integrated.env.windows.DEVKITPRO}/portlibs/nds/include/**"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "defines": [
+                "_DEBUG",
+                "_UNICODE",
+                "WIN32",
+                "ARM7",
+                "ARM9",
+                "__NDS__",
+                "_DEFAULT_SOURCE"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "${config:terminal.integrated.env.windows.DEVKITPRO}/devkitARM/bin/arm-none-eabi-g++.exe"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/build",
+                "${config:terminal.integrated.env.linux.DEVKITPRO}/libgba/include/**",
+                "${config:terminal.integrated.env.linux.DEVKITPRO}/devkitARM/arm-none-eabi/include/**"
+            ],
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "${config:terminal.integrated.env.linux.DEVKITPRO}/libgba/include/**",
+                    "${config:terminal.integrated.env.linux.DEVKITPRO}/devkitARM/arm-none-eabi/include/**"
+                ],
+                "limitSymbolsToIncludedHeaders": true,
+                "databaseFilename": ""
+            },
+            "defines": [
+                "_DEBUG",
+                "_UNICODE",
+                "ARM11",
+                "__GBA__"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++11",
+            "compilerPath": "${config:terminal.integrated.env.linux.DEVKITPRO}/devkitARM/bin/arm-none-eabi-g++",
+            "intelliSenseMode": "linux-gcc-arm"
+        }
+    ],
+    "version": 4
+}
