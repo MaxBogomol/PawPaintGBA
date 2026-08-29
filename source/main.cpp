@@ -3,14 +3,14 @@
 Paint paint;
 
 int main(void) {
-    //paint.setup();
+    paint.setup();
 	paint.setupVideo();
 	paint.setupLayers();
 	paint.setupTools();
 
 	while (1) {
-		//paint.updateInputs();
-		//paint.updateTools();
+		paint.updateInputs();
+		paint.updateTools();
 		paint.updateVideo();
 	}
 

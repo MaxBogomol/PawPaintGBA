@@ -3,9 +3,41 @@
 #include <string>
 
 #include "language.h"
+#include "pawscript.h"
 
+#include "pawscript_font_ascii.h"
+#include "pawscript_font_latin.h"
+#include "pawscript_font_latin_extended.h"
+#include "pawscript_font_greek.h"
+#include "pawscript_font_greek_extended.h"
+#include "pawscript_font_cyrillic.h"
+#include "pawscript_font_cyrillic_extended.h"
+#include "pawscript_font_hebrew.h"
 #include "paint_icon.h"
 #include "paint_monochrome_icon.h"
+
+void Paint::setup() {
+    firstFrameTool = true;
+
+    selectedTheme = 0;
+    selectedIcon = 0;
+    selectedLayer = 0;
+    selectedTool = 0;
+    selectedColor = blackColor;
+    selectedColorSub = whiteColor;
+
+    updateDrawAll = false;
+    updateDrawSelectedColor = false;
+    updateDrawTools = true;
+    updateDrawColors = true;
+    updateDrawPaintName = true;
+    updateDrawPaintIcon = true;
+
+    setRepeat(10, 2);
+
+    readSelectedLanguage();
+    setPaintName(STR_UNNAMED.c_str());
+}
 
 void Paint::setupVideo() {
     REG_DISPCNT = MODE_3 | BG2_ENABLE;
@@ -24,6 +56,14 @@ void Paint::setupTools() {
 
     tools.push_back(&brush);
     tools.push_back(&eraser);
+}
+
+void Paint::updateInputs() {
+    scanKeys();
+    keysD = keysDown();
+    keysH = keysHeld();
+    keysR = keysDownRepeat();
+    keysU = keysUp();
 }
 
 void Paint::updateTools() {
@@ -86,8 +126,8 @@ void Paint::drawTools() {
         }
     }
 
-    //string toolString = string(STR_TOOL) + ": " + tools[selectedTool]->getName(*this); 
-    //drawText(3, getToolYOffset(), toolString.c_str(), pixelBufferMain, blackColor);
+    string toolString = string(STR_TOOL) + ": " + tools[selectedTool]->getName(*this); 
+    drawText(3, getToolYOffset(), toolString.c_str(), pixelBufferMain, blackColor);
 }
 
 void Paint::drawColors() {
@@ -99,19 +139,19 @@ void Paint::drawColors() {
     int r = (selectedColor) & 31;
     int g = (selectedColor >> 5) & 31;
     int b = (selectedColor >> 10) & 31;
-    //string colorString = string("RGB: ") + intToChars(r) + " " + intToChars(g) + " " + intToChars(b); 
-    //drawText(21, SCREEN_HEIGHT - 31, colorString.c_str(), pixelBufferMain, blackColor);
+    string colorString = string("RGB: ") + intToChars(r) + " " + intToChars(g) + " " + intToChars(b); 
+    drawText(21, SCREEN_HEIGHT - 31, colorString.c_str(), pixelBufferMain, blackColor);
 
     drawSquare(3, SCREEN_HEIGHT - 19, 16, 16, pixelBufferMain, selectedColorSub);
     int rs = (selectedColorSub) & 31;
     int gs = (selectedColorSub >> 5) & 31;
     int bs = (selectedColorSub >> 10) & 31;
-    //string colorSubString = string("RGB: ") + intToChars(rs) + " " + intToChars(gs) + " " + intToChars(bs); 
-    //drawText(21, SCREEN_HEIGHT - 15, colorSubString.c_str(), pixelBufferMain, blackColor);
+    string colorSubString = string("RGB: ") + intToChars(rs) + " " + intToChars(gs) + " " + intToChars(bs); 
+    drawText(21, SCREEN_HEIGHT - 15, colorSubString.c_str(), pixelBufferMain, blackColor);
 }
 
 void Paint::drawPaintName() {
-    //clearBuffer(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH, 12, pixelBufferMain);
+    clearBuffer(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH, 12, pixelBufferMain);
     //drawText(3, SCREEN_HEIGHT - 46, getPaintName(), pixelBufferMain, blackColor);
 }
 
@@ -240,6 +280,175 @@ void Paint::drawLine(int x0, int y0, int x1, int y1, u16* buffer, u16 color) {
     }
 }
 
+u32 Paint::decodeChar(const char** c) {
+    const unsigned char* p = (const unsigned char*)*c;
+    u32 code = 0;
+
+    if (p[0] < 0x80) {
+        code = p[0];
+        *c += 1;
+    } else if (p[0] < 0xE0) {
+        code = ((p[0] & 0x1F) << 6) | (p[1] & 0x3F);
+        *c += 2;
+    } else if (p[0] < 0xF0) {
+        code = ((p[0] & 0x0F) << 12) | ((p[1] & 0x3F) << 6) | (p[2] & 0x3F);
+        *c += 3;
+    }
+    return code;
+}
+
+int Paint::getCharLength(u32 c) {
+    int listSize = sizeof(pawscriptCharLengthList) / sizeof(pawscriptCharLengthList[0]);
+    for (int i = 0; i < listSize; i++) {
+        if (c == (u32) pawscriptCharLengthList[i][0]) return (int) pawscriptCharLengthList[i][1];
+    }
+    return 6;
+}
+
+int Paint::getTextLength(const char* text) {
+    const char* textPtr = text;
+    int l = 0;
+
+    while (*textPtr) {
+        u32 charCode = decodeChar(&textPtr);
+        l += getCharLength(charCode);
+    }
+    return l;
+}
+
+void Paint::drawChar(int x, int y, u32 c, u16* buffer, u16 color) {
+    const u16* pixels = (const u16*) pawscript_font_asciiBitmap;
+    int index = (int) c;
+    bool extended = false;
+
+    if (c >= 0x00C0 && c <= 0x017F) {
+        int latinSize = sizeof(pawscriptLatinList) / sizeof(pawscriptLatinList[0]);
+        for (int i = 0; i < latinSize; i++) {
+            if (c == pawscriptLatinList[i]) {
+                index = i;
+                break;
+            }
+        }
+        int latinExtendedSize = sizeof(pawscriptLatinExtendedList) / sizeof(pawscriptLatinExtendedList[0]);
+        for (int i = 0; i < latinExtendedSize; i++) {
+            if (c == pawscriptLatinExtendedList[i]) {
+                index = i;
+                extended = true;
+                break;
+            }
+        }
+        
+        if (extended) {
+            pixels = (const u16*) pawscript_font_latin_extendedBitmap;
+        } else {
+            pixels = (const u16*) pawscript_font_latinBitmap;
+        }
+    }
+
+    if (c >= 0x0370 && c <= 0x03FF) {
+        int greekSize = sizeof(pawscriptGreekList) / sizeof(pawscriptGreekList[0]);
+        for (int i = 0; i < greekSize; i++) {
+            if (c == pawscriptGreekList[i]) {
+                index = i;
+                break;
+            }
+        }
+        int greekExtendedSize = sizeof(pawscriptGreekExtendedList) / sizeof(pawscriptGreekExtendedList[0]);
+        for (int i = 0; i < greekExtendedSize; i++) {
+            if (c == pawscriptGreekExtendedList[i]) {
+                index = i;
+                extended = true;
+                break;
+            }
+        }
+        
+        if (extended) {
+            pixels = (const u16*) pawscript_font_greek_extendedBitmap;
+        } else {
+            pixels = (const u16*) pawscript_font_greekBitmap;
+        }
+    }
+
+    if (c >= 0x0400 && c <= 0x04FF) {
+        int cyrillicSize = sizeof(pawscriptCyrillicList) / sizeof(pawscriptCyrillicList[0]);
+        for (int i = 0; i < cyrillicSize; i++) {
+            if (c == pawscriptCyrillicList[i]) {
+                index = i;
+                break;
+            }
+        }
+        int cyrillicExtendedSize = sizeof(pawscriptCyrillicExtendedList) / sizeof(pawscriptCyrillicExtendedList[0]);
+        for (int i = 0; i < cyrillicExtendedSize; i++) {
+            if (c == pawscriptCyrillicExtendedList[i]) {
+                index = i;
+                extended = true;
+                break;
+            }
+        }
+
+        if (extended) {
+            pixels = (const u16*) pawscript_font_cyrillic_extendedBitmap;
+        } else {
+            pixels = (const u16*) pawscript_font_cyrillicBitmap;
+        }
+    }
+
+    if (c >= 0x0590 && c <= 0x05FF) {
+        int hebrewSize = sizeof(pawscriptHebrewList) / sizeof(pawscriptHebrewList[0]);
+        for (int i = 0; i < hebrewSize; i++) {
+            if (c == pawscriptHebrewList[i]) {
+                index = i;
+                break;
+            }
+        }
+
+        pixels = (const u16*) pawscript_font_hebrewBitmap;
+    }
+
+    int xSize = extended ? 9 : 8;
+    int ySize = extended ? 12 : 8;
+    int spriteWidth = extended ? 144 : 128;
+    int yOffset = extended ? 3 : 0;
+
+    for (int row = 0; row < ySize; row++) {
+        for (int col = 0; col < xSize; col++) {
+            int xx = ((index % 16) * xSize) + col;
+            int yy = ((index / 16) * ySize) + row;
+
+            u16 pixel = pixels[xx + (yy * spriteWidth)];
+
+            if (pixel & BIT(15)) { 
+                int px = x + col;
+                int py = y + row - yOffset;
+                
+                if (px >= 0 && px < SCREEN_WIDTH && py >= 0 && py < SCREEN_HEIGHT) {
+                    buffer[py * SCREEN_WIDTH + px] = color;
+                }
+            }
+        }
+    }
+}
+
+void Paint::drawText(int x, int y, const char* text, u16* buffer, u16 color) {
+    const char* textPtr = text;
+
+    while (*textPtr) {
+        u32 charCode = decodeChar(&textPtr);
+
+        drawChar(x, y, charCode, buffer, color);
+        x += getCharLength(charCode);
+    }
+}
+
+void Paint::drawCharOutline(int x, int y, u32 c, u16* buffer, u16 color, u16 outlineColor) {
+    for (int dx = -1; dx <= 1; dx++) {
+        for (int dy = -1; dy <= 1; dy++) {
+            drawChar(x + dx, y + dy, c, buffer, outlineColor);
+        }
+    }
+    drawChar(x, y, c, buffer, color);
+}
+
 void Paint::drawSprite(int x0, int y0, int x1, int y1, int xShift, int yShift, int xSize, int ySize, const unsigned int* spriteBitmap, u16* buffer) {
     const u16* pixels = (const u16*) spriteBitmap;
 
@@ -340,6 +549,20 @@ int Paint::getDitherThreshold(int x, int y, int xSize, int ySize, int xShift, in
     int xOffset = ((y / ySize) % 2 == 1) ? xShift : 0;
     int yOffset = ((x / xSize) % 2 == 1) ? yShift : 0;
     return ((x + xOffset) % xSize) + ((y + yOffset) % ySize);
+}
+
+const char* Paint::intToChars(int val) {
+    static char buf[12];
+    sprintf(buf, "%d", val);
+    return buf;
+}
+
+void Paint::setPaintName(const char* name) {
+    paintName = name;
+}
+
+const char* Paint::getPaintName() {
+    return paintName;
 }
 
 void Paint::clearBuffer(int x0, int y0, int x1, int y1, u16* buffer, u16 color) {

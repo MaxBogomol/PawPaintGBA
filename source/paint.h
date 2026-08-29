@@ -32,6 +32,11 @@ inline u16 aceThemeColor = ARGB16(1, 20, 6, 20); //#a231a2
 inline EWRAM_DATA u16 pixelBufferMain[SCREEN_WIDTH * SCREEN_HEIGHT];
 inline EWRAM_DATA u16 pixelBufferCanvas[SCREEN_WIDTH * SCREEN_HEIGHT];
 
+inline int keysD;
+inline int keysH;
+inline int keysR;
+inline int keysU;
+
 inline Brush brush;
 inline Eraser eraser;
 
@@ -56,6 +61,8 @@ class Paint {
     private:
         bool firstFrameTool = true;
 
+        const char* paintName = "Unnamed";
+
     public:
         int selectedLanguage = 0;
         int selectedTheme = 0;
@@ -74,12 +81,12 @@ class Paint {
 
         vector<Tool*> tools;
 
-        //void setup();
+        void setup();
         void setupVideo();
         void setupLayers();
         void setupTools();
 
-        //void updateInputs();
+        void updateInputs();
         void updateTools();
         void updateVideo();
 
@@ -101,6 +108,13 @@ class Paint {
         void drawCircleDiameter(int xc, int yc, int d, u16* buffer, u16 color);
         void drawCircleDiameterNoise(int xc, int yc, int d, u16* buffer, u16 color, int xSize, int ySize, int xShift, int yShift, int xOffset, int yOffset);
         void drawLine(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
+        u32 decodeChar(const char** s);
+        int getCharLength(u32 c);
+        int getTextLength(const char* text);
+        void drawChar(int x, int y, u32 c, u16* buffer, u16 color);
+        void drawText(int x, int y, const char* text, u16* buffer, u16 color);
+        void drawCharOutline(int x, int y, u32 c, u16* buffer, u16 color, u16 outlineColor);
+        void drawTextOutline(int x, int y, const char* text, u16* buffer, u16 color, u16 outlineColor);
         void drawSprite(int x0, int y0, int x1, int y1, int xShift, int yShift, int xSize, int ySize, const unsigned int* spriteBitmap, u16* buffer);
         void drawSprite(int x0, int y0, int x1, int y1, const unsigned int* spriteBitmap, u16* buffer);
 
@@ -109,6 +123,10 @@ class Paint {
         u16 HSVtoRGB(HSV hsv);
         HSV RGBtoHSV(u16 color);
         int getDitherThreshold(int x, int y, int xSize, int ySize, int xShift, int yShift);
+        const char* intToChars(int val);
+
+        void setPaintName(const char* name);
+        const char* getPaintName();
 
         void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
         void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer);
