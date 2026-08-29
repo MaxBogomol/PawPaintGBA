@@ -15,10 +15,6 @@ class Brush : public Tool {
         int noiseYShift = 0;
         int noiseXOffset = 0;
         int noiseYOffset = 0;
-        int cursorX = 0;
-        int cursorY = 0;
-        int cursorXOld = 0;
-        int cursorYOld = 0;
         bool active = false;
         bool activeNoise = false;
         bool updateDrawTool = true;
@@ -33,6 +29,7 @@ class Brush : public Tool {
         virtual void updateTool(Paint& paint) override;
         virtual void open(Paint& paint) override;
         virtual void close(Paint& paint) override;
+        virtual void redraw(Paint& paint) override;
 
         virtual void drawIcon(Paint& paint, int x, int y, u16* buffer) override;
 

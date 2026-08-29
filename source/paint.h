@@ -5,9 +5,11 @@
 
 using namespace std;
 
-#include "tool.h"
 #include "brush.h"
 #include "eraser.h"
+#include "eyedropper.h"
+#include "settings.h"
+#include "info.h"
 
 #define ARGB16(a,r,g,b) (((a) << 15) | (r) | ((g) << 5) | ((b) << 10))
 
@@ -39,8 +41,15 @@ inline int keysU;
 
 inline Brush brush;
 inline Eraser eraser;
+inline Eyedropper eyedropper;
+inline Settings settings;
+inline Info info;
 
 inline const char* paintVerstion = "v0.1";
+
+inline int maxLanguages = 6;
+inline int maxPaintThemes = 4;
+inline int maxPaintIcons = 2;
 
 inline const char* languageCodes[6] = {
     "en_us",
@@ -79,6 +88,11 @@ class Paint {
         bool updateDrawColors = true;
         bool updateDrawPaintName = true;
         bool updateDrawPaintIcon = true;
+
+        int cursorX = 0;
+        int cursorY = 0;
+        int cursorXOld = 0;
+        int cursorYOld = 0;
 
         vector<Tool*> tools;
 

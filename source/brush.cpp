@@ -28,10 +28,6 @@ void Brush::setup(Paint& paint) {
     noiseYShift = 0;
     noiseXOffset = 0;
     noiseYOffset = 0;
-    cursorX = 0;
-    cursorY = 0;
-    cursorXOld = 0;
-    cursorYOld = 0;
     active = false;
     activeNoise = false;
     updateDrawTool = true;
@@ -199,25 +195,25 @@ void Brush::update(Paint& paint) {
             }
         }
     } else {
-        if ((keysR & KEY_LEFT) && (cursorX - 1 >= 0)) {
-            cursorX--;
+        if ((keysR & KEY_LEFT) && (paint.cursorX - 1 >= 0)) {
+            paint.cursorX--;
             updateDrawCursor = true;
         }
-        if ((keysR & KEY_RIGHT) && (cursorX + 1 < SCREEN_WIDTH)) {
-            cursorX++;
+        if ((keysR & KEY_RIGHT) && (paint.cursorX + 1 < SCREEN_WIDTH)) {
+            paint.cursorX++;
             updateDrawCursor = true;
         }
-        if ((keysR & KEY_UP) && (cursorY - 1 >= 0)) {
-            cursorY--;
+        if ((keysR & KEY_UP) && (paint.cursorY - 1 >= 0)) {
+            paint.cursorY--;
             updateDrawCursor = true;
         }
-        if ((keysR & KEY_DOWN) && (cursorY + 1 < SCREEN_HEIGHT)) {
-            cursorY++;
+        if ((keysR & KEY_DOWN) && (paint.cursorY + 1 < SCREEN_HEIGHT)) {
+            paint.cursorY++;
             updateDrawCursor = true;
         }
         if (keysH & KEY_A) {
             //paint.updateLayersEnable();
-            drawLine(paint, cursorX, cursorY, cursorX, cursorY, getSelectedLayer(paint), getSelectedColor(paint));
+            drawLine(paint, paint.cursorX, paint.cursorY, paint.cursorX, paint.cursorY, getSelectedLayer(paint), getSelectedColor(paint));
             //paint.updateLayersDisable();
         }
     }
@@ -244,6 +240,10 @@ void Brush::close(Paint& paint) {
 
     active = false;
     drawCursor(paint);
+}
+
+void Brush::redraw(Paint& paint) {
+    updateDrawTool = true;
 }
 
 void Brush::drawIcon(Paint& paint, int x, int y, u16* buffer) {
@@ -377,8 +377,8 @@ void Brush::drawCursor(Paint& paint, bool clear) {
 
     //if (active && !clear) drawLine(paint, cursorX, cursorY, cursorX, cursorY, pixelBufferSub, getSelectedColor(paint));
 
-    cursorXOld = cursorX;
-    cursorYOld = cursorY;
+    paint.cursorXOld = paint.cursorX;
+    paint.cursorYOld = paint.cursorY;
 }
 
 void Brush::drawCursor(Paint& paint) {

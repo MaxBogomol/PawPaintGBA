@@ -55,9 +55,15 @@ void Paint::setupLayers() {
 void Paint::setupTools() {
     brush.setup(*this);
     eraser.setup(*this);
+    eyedropper.setup(*this);
+    settings.setup(*this);
+    info.setup(*this);
 
     tools.push_back(&brush);
     tools.push_back(&eraser);
+    tools.push_back(&eyedropper);
+    tools.push_back(&settings);
+    tools.push_back(&info);
 }
 
 void Paint::updateInputs() {
@@ -73,17 +79,15 @@ void Paint::updateTools() {
     bool toolChanged = false;
 
     if (updateDrawSelectedColor) updateDrawSelectedColor = false;
-    if (updateDrawAll) {
-        clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
-        updateDrawTools = true;
-        updateDrawColors = true;
-        updateDrawPaintName = true;
-        updateDrawPaintIcon = true;
-        updateDrawAll = false;
-    }
 
     if (keysD & KEY_START) {
         reverseScreens = !reverseScreens;
+        if (reverseScreens) {
+            dmaCopy(pixelBufferCanvas, pixelBufferMain, sizeof(pixelBufferCanvas));
+        } else {
+            updateDrawAll = true;
+        }
+        tools[selectedTool]->reverse(*this);
     }
 
     if (!reverseScreens) {
@@ -97,6 +101,16 @@ void Paint::updateTools() {
             if (selectedTool > (int) tools.size() - 1) selectedTool = 0;
             toolChanged = true;
         }
+    }
+
+    if (updateDrawAll) {
+        clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
+        updateDrawTools = true;
+        updateDrawColors = true;
+        updateDrawPaintName = true;
+        updateDrawPaintIcon = true;
+        updateDrawAll = false;
+        tools[selectedTool]->redraw(*this);
     }
 
     if (toolChanged) {
@@ -137,11 +151,7 @@ void Paint::updateVideo() {
     tools[selectedTool]->updateTool(*this);
 
     VBlankIntrWait();
-    if (!reverseScreens) {
-        dmaCopy(pixelBufferMain, videoMemory, sizeof(pixelBufferMain));
-    } else {
-        dmaCopy(pixelBufferCanvas, videoMemory, sizeof(pixelBufferCanvas));
-    }
+    dmaCopy(pixelBufferMain, videoMemory, sizeof(pixelBufferMain));
 }
 
 void Paint::drawTools() {
