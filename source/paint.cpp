@@ -15,6 +15,7 @@
 #include "pawscript_font_hebrew.h"
 #include "paint_icon.h"
 #include "paint_monochrome_icon.h"
+#include "buttons_icon.h"
 
 void Paint::setup() {
     firstFrameTool = true;
@@ -25,6 +26,7 @@ void Paint::setup() {
     selectedTool = 0;
     selectedColor = blackColor;
     selectedColorSub = whiteColor;
+    reverseScreens = false;
 
     updateDrawAll = false;
     updateDrawSelectedColor = false;
@@ -70,6 +72,33 @@ void Paint::updateTools() {
     int selectedToolOld = selectedTool;
     bool toolChanged = false;
 
+    if (updateDrawSelectedColor) updateDrawSelectedColor = false;
+    if (updateDrawAll) {
+        clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
+        updateDrawTools = true;
+        updateDrawColors = true;
+        updateDrawPaintName = true;
+        updateDrawPaintIcon = true;
+        updateDrawAll = false;
+    }
+
+    if (keysD & KEY_START) {
+        reverseScreens = !reverseScreens;
+    }
+
+    if (!reverseScreens) {
+        if (keysD & KEY_L) {
+            selectedTool--;
+            if (selectedTool < 0) selectedTool = tools.size() - 1;
+            toolChanged = true;
+        }
+        if (keysD & KEY_R) {
+            selectedTool++;
+            if (selectedTool > (int) tools.size() - 1) selectedTool = 0;
+            toolChanged = true;
+        }
+    }
+
     if (toolChanged) {
         tools[selectedToolOld]->close(*this);
         tools[selectedTool]->open(*this);
@@ -108,7 +137,11 @@ void Paint::updateVideo() {
     tools[selectedTool]->updateTool(*this);
 
     VBlankIntrWait();
-    dmaCopy(pixelBufferMain, vid_mem, sizeof(pixelBufferMain));
+    if (!reverseScreens) {
+        dmaCopy(pixelBufferMain, videoMemory, sizeof(pixelBufferMain));
+    } else {
+        dmaCopy(pixelBufferCanvas, videoMemory, sizeof(pixelBufferCanvas));
+    }
 }
 
 void Paint::drawTools() {
@@ -152,7 +185,7 @@ void Paint::drawColors() {
 
 void Paint::drawPaintName() {
     clearBuffer(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH, 12, pixelBufferMain);
-    //drawText(3, SCREEN_HEIGHT - 46, getPaintName(), pixelBufferMain, blackColor);
+    drawText(3, SCREEN_HEIGHT - 46, getPaintName(), pixelBufferMain, blackColor);
 }
 
 void Paint::drawPaintIcon() {
@@ -587,6 +620,27 @@ int Paint::getToolsYOffset() {
 
 int Paint::getToolsButtonsOffset() {
     return 8;
+}
+
+void Paint::drawYButton(int x, int y, u16* buffer) {
+    drawSprite(x, y, 32, 32, 0, 16, 8, 8, buttons_iconBitmap, buffer);
+}
+
+void Paint::drawXButton(int x, int y, u16* buffer) {
+    drawSprite(x, y, 32, 32, 8, 16, 8, 8, buttons_iconBitmap, buffer);
+}
+
+void Paint::drawBButton(int x, int y, u16* buffer) {
+    drawSprite(x, y, 32, 32, 0, 24, 8, 8, buttons_iconBitmap, buffer);
+}
+
+void Paint::drawAButton(int x, int y, u16* buffer) {
+    drawSprite(x, y, 32, 32, 8, 24, 8, 8, buttons_iconBitmap, buffer);
+}
+
+void Paint::drawScrollBox(int x, int y, int size, int scroll, u16* buffer) {
+    drawLine(x, y, x + size - 1, y, pixelBufferMain, blackColor);
+    drawSquareOutline(x + scroll - 1, y + 2, 3, 4, pixelBufferMain, blackColor);
 }
 
 u16 Paint::getThemeColor(int theme) {

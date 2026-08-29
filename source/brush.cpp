@@ -39,7 +39,188 @@ void Brush::setup(Paint& paint) {
 }
 
 void Brush::update(Paint& paint) {
+    if (!paint.reverseScreens) {
+        if (keysD & KEY_A) {
+            if (line >= 2) {
+                active = !active;
+                activeNoise = false;
+                updateDrawTool = true;
+            }
+        }
 
+        int maxLine = 2;
+        if (type >= 3) maxLine = 5;
+
+        if (!active) {
+            if ((keysD & KEY_UP) && (line - 1 >= 0)) {
+                line--;
+                updateDrawTool = true;
+            }
+            if ((keysD & KEY_DOWN) && (line + 1 < maxLine)) {
+                line++;
+                updateDrawTool = true;
+            }
+        }
+
+        switch (line) {
+            case 0: {
+                if (keysD & KEY_LEFT) {
+                    type--;
+                    if (type < 0) type = 5;
+                    updateDrawTool = true;
+                    paint.updateDrawTools = true;
+                }
+                if (keysD & KEY_RIGHT) {
+                    type++;
+                    if (type > 5) type = 0;
+                    updateDrawTool = true;
+                    paint.updateDrawTools = true;
+                }
+                break;
+            }
+            case 1: {
+                switch (type) {
+                    case 0:
+                    case 3: {
+                        if ((keysR & KEY_LEFT) && (squareSize - 1 >= 1)) {
+                            squareSize--;
+                            updateDrawTool = true;
+                        }
+                        if ((keysR & KEY_RIGHT) && (squareSize + 1 <= 64)) {
+                            squareSize++;
+                            updateDrawTool = true;
+                        }
+                        break;
+                    }
+                    case 1:
+                    case 4: {
+                        if ((keysR & KEY_LEFT) && (circleDiameter - 1 >= 1)) {
+                            circleDiameter--;
+                            updateDrawTool = true;
+                        }
+                        if ((keysR & KEY_RIGHT) && (circleDiameter + 1 <= 64)) {
+                            circleDiameter++;
+                            updateDrawTool = true;
+                        }
+                        break;
+                    }
+                    case 2:
+                    case 5: {
+                        if ((keysR & KEY_LEFT) && (dotRadius - 1 >= 1)) {
+                            dotRadius--;
+                            updateDrawTool = true;
+                        }
+                        if ((keysR & KEY_RIGHT) && (dotRadius + 1 <= 32)) {
+                            dotRadius++;
+                            updateDrawTool = true;
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        if (type >= 3) {
+            if (active) {
+                if ((keysD & KEY_UP) || (keysD & KEY_DOWN)) {
+                    activeNoise = !activeNoise;
+                    updateDrawTool = true;
+                }
+
+                switch (line) {
+                    case 2: {
+                        if (!activeNoise) {
+                            if ((keysR & KEY_LEFT) && (noiseXSize - 1 >= 1)) {
+                                noiseXSize--;
+                                updateDrawTool = true;
+                            }
+                            if ((keysR & KEY_RIGHT) && (noiseXSize + 1 <= 16)) {
+                                noiseXSize++;
+                                updateDrawTool = true;
+                            }
+                        } else {
+                            if ((keysR & KEY_LEFT) && (noiseYSize - 1 >= 1)) {
+                                noiseYSize--;
+                                updateDrawTool = true;
+                            }
+                            if ((keysR & KEY_RIGHT) && (noiseYSize + 1 <= 16)) {
+                                noiseYSize++;
+                                updateDrawTool = true;
+                            }
+                        }
+                        break;
+                    }
+                    case 3: {
+                        if (!activeNoise) {
+                            if ((keysR & KEY_LEFT) && (noiseXShift - 1 >= 0)) {
+                                noiseXShift--;
+                                updateDrawTool = true;
+                            }
+                            if ((keysR & KEY_RIGHT) && (noiseXShift + 1 < 16)) {
+                                noiseXShift++;
+                                updateDrawTool = true;
+                            }
+                        } else {
+                            if ((keysR & KEY_LEFT) && (noiseYShift - 1 >= 0)) {
+                                noiseYShift--;
+                                updateDrawTool = true;
+                            }
+                            if ((keysR & KEY_RIGHT) && (noiseYShift + 1 < 16)) {
+                                noiseYShift++;
+                                updateDrawTool = true;
+                            }
+                        }
+                        break;
+                    }
+                    case 4: {
+                        if (!activeNoise) {
+                            if ((keysR & KEY_LEFT) && (noiseXOffset - 1 >= 0)) {
+                                noiseXOffset--;
+                                updateDrawTool = true;
+                            }
+                            if ((keysR & KEY_RIGHT) && (noiseXOffset + 1 < 16)) {
+                                noiseXOffset++;
+                                updateDrawTool = true;
+                            }
+                        } else {
+                            if ((keysR & KEY_LEFT) && (noiseYOffset - 1 >= 0)) {
+                                noiseYOffset--;
+                                updateDrawTool = true;
+                            }
+                            if ((keysR & KEY_RIGHT) && (noiseYOffset + 1 < 16)) {
+                                noiseYOffset++;
+                                updateDrawTool = true;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    } else {
+        if ((keysR & KEY_LEFT) && (cursorX - 1 >= 0)) {
+            cursorX--;
+            updateDrawCursor = true;
+        }
+        if ((keysR & KEY_RIGHT) && (cursorX + 1 < SCREEN_WIDTH)) {
+            cursorX++;
+            updateDrawCursor = true;
+        }
+        if ((keysR & KEY_UP) && (cursorY - 1 >= 0)) {
+            cursorY--;
+            updateDrawCursor = true;
+        }
+        if ((keysR & KEY_DOWN) && (cursorY + 1 < SCREEN_HEIGHT)) {
+            cursorY++;
+            updateDrawCursor = true;
+        }
+        if (keysH & KEY_A) {
+            //paint.updateLayersEnable();
+            drawLine(paint, cursorX, cursorY, cursorX, cursorY, getSelectedLayer(paint), getSelectedColor(paint));
+            //paint.updateLayersDisable();
+        }
+    }
 }
 
 void Brush::updateTool(Paint& paint) {
@@ -58,8 +239,8 @@ void Brush::open(Paint& paint) {
 }
 
 void Brush::close(Paint& paint) {
-    //int yOffset = paint.getToolsYOffset();
-    //paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 62, pixelBufferMain);
+    int yOffset = paint.getToolsYOffset();
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 62, pixelBufferMain);
 
     active = false;
     drawCursor(paint);
@@ -128,7 +309,57 @@ void Brush::drawLine(Paint& paint, int x0, int y0, int x1, int y1, u16* buffer, 
 }
 
 void Brush::drawTool(Paint& paint) {
+    int yOffset = paint.getToolsYOffset();
+    int bOffset = paint.getToolsButtonsOffset();
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 61, pixelBufferMain);
 
+    string typeString = string((line == 0) ? ">" : "") + STR_BRUSH_TYPE + ": " + getTypeName(paint, type); 
+    paint.drawText(3, yOffset, typeString.c_str(), pixelBufferMain, blackColor);
+    paint.drawSprite(SCREEN_WIDTH - bOffset - 16 - 5, yOffset, 32, 32, 24, 0, 8, 8, buttons_iconBitmap, pixelBufferMain);
+    paint.drawSprite(SCREEN_WIDTH - bOffset - 8, yOffset, 32, 32, 8, 0, 8, 8, buttons_iconBitmap, pixelBufferMain);
+
+    yOffset += 10;
+
+    switch (type) {
+        case 0:
+    	case 3: {
+            string sizeString = string((line == 1) ? ">" : "") + STR_BRUSH_SIZE + ": " + paint.intToChars(squareSize);
+            paint.drawText(3, yOffset, sizeString.c_str(), pixelBufferMain, blackColor);
+            paint.drawScrollBox(SCREEN_WIDTH - bOffset - 64, yOffset + 1, 64, squareSize - 1, pixelBufferMain);
+            break;
+        }
+        case 1:
+        case 4: {
+            string diameterString = string((line == 1) ? ">" : "") + STR_BRUSH_DIAMETER + ": " + paint.intToChars(circleDiameter);
+            paint.drawText(3, yOffset, diameterString.c_str(), pixelBufferMain, blackColor);
+            paint.drawScrollBox(SCREEN_WIDTH - bOffset - 64, yOffset + 1, 64, circleDiameter - 1, pixelBufferMain);
+            break;
+        }
+        case 2:
+        case 5: {
+            string radiusString = string((line == 1) ? ">" : "") + STR_BRUSH_RADIUS + ": " + paint.intToChars(dotRadius);
+            paint.drawText(3, yOffset, radiusString.c_str(), pixelBufferMain, blackColor);
+            paint.drawScrollBox(SCREEN_WIDTH - bOffset - 32, yOffset + 1, 32, dotRadius - 1, pixelBufferMain);
+            break;
+        }
+    }
+
+    if (type >= 3) {
+        string noiseSizeString = string((line == 2 && !active) ? ">" : "") + STR_BRUSH_NOISE_SIZE + ": " + ((line == 2 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXSize) + " " + ((line == 2 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYSize);
+        paint.drawText(3, yOffset += 10, noiseSizeString.c_str(), pixelBufferMain, blackColor);
+        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 40, yOffset + 1, 16, noiseXSize - 1, pixelBufferMain);
+        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 16, yOffset + 1, 16, noiseYSize - 1, pixelBufferMain);
+
+        string noiseShiftString = string((line == 3 && !active) ? ">" : "") + STR_BRUSH_NOISE_SHIFT + ": " + ((line == 3 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXShift) + " " + ((line == 3 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYShift);
+        paint.drawText(3, yOffset += 10, noiseShiftString.c_str(), pixelBufferMain, blackColor);
+        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 40, yOffset + 1, 16, noiseXShift, pixelBufferMain);
+        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 16, yOffset + 1, 16, noiseYShift, pixelBufferMain);
+
+        string noiseOffsetString = string((line == 4 && !active) ? ">" : "") + STR_BRUSH_NOISE_OFFSET + ": " + ((line == 4 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXOffset) + " " + ((line == 4 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYOffset);
+        paint.drawText(3, yOffset += 10, noiseOffsetString.c_str(), pixelBufferMain, blackColor);
+        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 40, yOffset + 1, 16, noiseXOffset, pixelBufferMain);
+        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 16, yOffset + 1, 16, noiseYOffset, pixelBufferMain);
+    }
 }
 
 void Brush::drawCursor(Paint& paint, bool clear) {
@@ -167,7 +398,7 @@ const char* Brush::getTypeName(Paint& paint, int type) {
 }
 
 u16 *Brush::getSelectedLayer(Paint& paint) {
-    return pixelBufferMain;//paint.getSelectedLayer();
+    return pixelBufferCanvas;//paint.getSelectedLayer();
 }
 
 u16 Brush::getSelectedColor(Paint& paint) {

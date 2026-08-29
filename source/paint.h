@@ -14,7 +14,7 @@ using namespace std;
 #define SCREEN_WIDTH  240
 #define SCREEN_HEIGHT 160
 
-u16* const vid_mem = (u16*) 0x06000000;
+u16* const videoMemory = (u16*) 0x06000000;
 
 inline u16 alphaColor = ARGB16(0, 0, 0, 0);
 inline u16 whiteColor = ARGB16(1, 31, 31, 31);
@@ -71,6 +71,7 @@ class Paint {
         int selectedTool = 0;
         u16 selectedColor = blackColor;
         u16 selectedColorSub = whiteColor;
+        bool reverseScreens = false;
 
         bool updateDrawAll = false;
         bool updateDrawSelectedColor = false;
@@ -134,6 +135,12 @@ class Paint {
         int getToolYOffset();
         int getToolsYOffset();
         int getToolsButtonsOffset();
+
+        void drawYButton(int x, int y, u16* buffer);
+        void drawXButton(int x, int y, u16* buffer);
+        void drawBButton(int x, int y, u16* buffer);
+        void drawAButton(int x, int y, u16* buffer);
+        void drawScrollBox(int x, int y, int size, int scroll, u16* buffer);
 
         u16 getThemeColor(int theme);
         u16 getSelectedThemeColor();
