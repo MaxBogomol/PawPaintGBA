@@ -3,5 +3,6 @@
 *.elf
 *.lst
 *.gba
+*.sav
 
 *.geany

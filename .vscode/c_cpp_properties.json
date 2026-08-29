@@ -5,18 +5,14 @@
             "includePath": [
                 "${workspaceFolder}",
                 "${workspaceFolder}/build",
-                "${config:terminal.integrated.env.windows.DEVKITPRO}/libnds/include/**",
-                "${config:terminal.integrated.env.windows.DEVKITPRO}/devkitARM/arm-none-eabi/include/**",
-                "${config:terminal.integrated.env.windows.DEVKITPRO}/calico/include/**",
-                "${config:terminal.integrated.env.windows.DEVKITPRO}/portlibs/nds/include/**"
+                "${config:terminal.integrated.env.windows.DEVKITPRO}/libgba/include/**",
+                "${config:terminal.integrated.env.windows.DEVKITPRO}/devkitARM/arm-none-eabi/include/**"
             ],
             "browse": {
                 "path": [
                     "${workspaceFolder}",
-                    "${config:terminal.integrated.env.windows.DEVKITPRO}/libnds/include/**",
-                    "${config:terminal.integrated.env.windows.DEVKITPRO}/devkitARM/arm-none-eabi/include/**",
-                    "${config:terminal.integrated.env.windows.DEVKITPRO}/calico/include/**",
-                    "${config:terminal.integrated.env.windows.DEVKITPRO}/portlibs/nds/include/**"
+                    "${config:terminal.integrated.env.windows.DEVKITPRO}/libgba/include/**",
+                    "${config:terminal.integrated.env.windows.DEVKITPRO}/devkitARM/arm-none-eabi/include/**"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
@@ -24,11 +20,8 @@
             "defines": [
                 "_DEBUG",
                 "_UNICODE",
-                "WIN32",
-                "ARM7",
-                "ARM9",
-                "__NDS__",
-                "_DEFAULT_SOURCE"
+                "ARM11",
+                "__GBA__"
             ],
             "cStandard": "c11",
             "cppStandard": "c++11",
