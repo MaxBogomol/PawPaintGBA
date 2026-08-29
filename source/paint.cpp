@@ -91,28 +91,28 @@ void Paint::drawTools() {
 }
 
 void Paint::drawColors() {
-    clearBuffer(2, 124, 90, 34, pixelBufferMain);
+    clearBuffer(2, SCREEN_HEIGHT - 36, 90, 34, pixelBufferMain);
 
-    drawSquareOutline(2, 124, 18, 34, pixelBufferMain, blackColor);
+    drawSquareOutline(2, SCREEN_HEIGHT - 36, 18, 34, pixelBufferMain, blackColor);
 
-    drawSquare(3, 125, 16, 16, pixelBufferMain, selectedColor);
+    drawSquare(3, SCREEN_HEIGHT - 35, 16, 16, pixelBufferMain, selectedColor);
     int r = (selectedColor) & 31;
     int g = (selectedColor >> 5) & 31;
     int b = (selectedColor >> 10) & 31;
     //string colorString = string("RGB: ") + intToChars(r) + " " + intToChars(g) + " " + intToChars(b); 
-    //drawText(21, 161, colorString.c_str(), pixelBufferMain, blackColor);
+    //drawText(21, SCREEN_HEIGHT - 31, colorString.c_str(), pixelBufferMain, blackColor);
 
-    drawSquare(3, 141, 16, 16, pixelBufferMain, selectedColorSub);
+    drawSquare(3, SCREEN_HEIGHT - 19, 16, 16, pixelBufferMain, selectedColorSub);
     int rs = (selectedColorSub) & 31;
     int gs = (selectedColorSub >> 5) & 31;
     int bs = (selectedColorSub >> 10) & 31;
     //string colorSubString = string("RGB: ") + intToChars(rs) + " " + intToChars(gs) + " " + intToChars(bs); 
-    //drawText(21, 177, colorSubString.c_str(), pixelBufferMain, blackColor);
+    //drawText(21, SCREEN_HEIGHT - 15, colorSubString.c_str(), pixelBufferMain, blackColor);
 }
 
 void Paint::drawPaintName() {
-    clearBuffer(0, 111, SCREEN_WIDTH, 12, pixelBufferMain);
-    //drawText(3, 146, getPaintName(), pixelBufferMain, blackColor);
+    //clearBuffer(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH, 12, pixelBufferMain);
+    //drawText(3, SCREEN_HEIGHT - 46, getPaintName(), pixelBufferMain, blackColor);
 }
 
 void Paint::drawPaintIcon() {
