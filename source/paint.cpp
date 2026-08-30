@@ -30,7 +30,6 @@ void Paint::setup() {
     reverseScreens = false;
 
     updateDrawAll = false;
-    updateDrawSelectedColor = false;
     updateDrawTools = true;
     updateDrawColors = true;
     updateDrawHints = true;
@@ -58,12 +57,16 @@ void Paint::setupTools() {
     brush.setup(*this);
     eraser.setup(*this);
     eyedropper.setup(*this);
+    colorPicker.setup(*this);
+    saving.setup(*this);
     settings.setup(*this);
     info.setup(*this);
 
     tools.push_back(&brush);
     tools.push_back(&eraser);
     tools.push_back(&eyedropper);
+    tools.push_back(&colorPicker);
+    tools.push_back(&saving);
     tools.push_back(&settings);
     tools.push_back(&info);
 }
@@ -79,8 +82,6 @@ void Paint::updateInputs() {
 void Paint::updateTools() {
     int selectedToolOld = selectedTool;
     bool toolChanged = false;
-
-    if (updateDrawSelectedColor) updateDrawSelectedColor = false;
 
     if (keysD & KEY_START) {
         reverseScreens = !reverseScreens;
@@ -105,17 +106,6 @@ void Paint::updateTools() {
         }
     }
 
-    if (updateDrawAll) {
-        clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
-        updateDrawTools = true;
-        updateDrawColors = true;
-        updateDrawHints = true;
-        updateDrawPaintName = true;
-        updateDrawPaintIcon = true;
-        updateDrawAll = false;
-        tools[selectedTool]->redraw(*this);
-    }
-
     if (toolChanged) {
         tools[selectedToolOld]->close(*this);
         tools[selectedTool]->open(*this);
@@ -126,6 +116,17 @@ void Paint::updateTools() {
     if (firstFrameTool) {
         tools[selectedTool]->open(*this);
         firstFrameTool = false;
+    }
+
+    if (updateDrawAll) {
+        clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
+        updateDrawTools = true;
+        updateDrawColors = true;
+        updateDrawHints = true;
+        updateDrawPaintName = true;
+        updateDrawPaintIcon = true;
+        updateDrawAll = false;
+        tools[selectedTool]->redraw(*this);
     }
 
     tools[selectedTool]->update(*this);

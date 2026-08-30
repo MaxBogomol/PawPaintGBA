@@ -221,9 +221,9 @@ void Brush::update(Paint& paint) {
         }
 
         if (updateDrawCursor) {
-        drawCursor(paint);
-        updateDrawCursor = false;
-    }
+            drawCursor(paint);
+            updateDrawCursor = false;
+        }
     }
 }
 

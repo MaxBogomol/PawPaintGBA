@@ -8,6 +8,8 @@ using namespace std;
 #include "brush.h"
 #include "eraser.h"
 #include "eyedropper.h"
+#include "color_picker.h"
+#include "saving.h"
 #include "settings.h"
 #include "info.h"
 
@@ -42,6 +44,8 @@ inline int keysU;
 inline Brush brush;
 inline Eraser eraser;
 inline Eyedropper eyedropper;
+inline ColorPicker colorPicker;
+inline Saving saving;
 inline Settings settings;
 inline Info info;
 
@@ -84,7 +88,6 @@ class Paint {
         bool reverseScreens = false;
 
         bool updateDrawAll = false;
-        bool updateDrawSelectedColor = false;
         bool updateDrawTools = true;
         bool updateDrawColors = true;
         bool updateDrawHints = true;
