@@ -157,10 +157,20 @@ class Paint {
         int getToolsYOffset();
         int getToolsButtonsOffset();
 
-        void drawYButton(int x, int y, u16* buffer);
-        void drawXButton(int x, int y, u16* buffer);
+        void drawUpButton(int x, int y, u16* buffer);
+        void drawRightButton(int x, int y, u16* buffer);
+        void drawDownButton(int x, int y, u16* buffer);
+        void drawLeftButton(int x, int y, u16* buffer);
+        void drawNoneButton(int x, int y, u16* buffer);
+        void drawUpDownButton(int x, int y, u16* buffer);
+        void drawLeftRightButton(int x, int y, u16* buffer);
+        void drawAllButton(int x, int y, u16* buffer);
         void drawBButton(int x, int y, u16* buffer);
         void drawAButton(int x, int y, u16* buffer);
+        void drawLButton(int x, int y, u16* buffer);
+        void drawRButton(int x, int y, u16* buffer);
+        void drawStartButton(int x, int y, u16* buffer);
+        void drawSelectButton(int x, int y, u16* buffer);
         void drawScrollBox(int x, int y, int size, int scroll, u16* buffer);
 
         u16 getThemeColor(int theme);
