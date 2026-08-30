@@ -33,6 +33,7 @@ void Paint::setup() {
     updateDrawSelectedColor = false;
     updateDrawTools = true;
     updateDrawColors = true;
+    updateDrawHints = true;
     updateDrawPaintName = true;
     updateDrawPaintIcon = true;
 
@@ -108,6 +109,7 @@ void Paint::updateTools() {
         clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
         updateDrawTools = true;
         updateDrawColors = true;
+        updateDrawHints = true;
         updateDrawPaintName = true;
         updateDrawPaintIcon = true;
         updateDrawAll = false;
@@ -118,6 +120,7 @@ void Paint::updateTools() {
         tools[selectedToolOld]->close(*this);
         tools[selectedTool]->open(*this);
         updateDrawTools = true;
+        updateDrawHints = true;
     }
 
     if (firstFrameTool) {
@@ -129,27 +132,34 @@ void Paint::updateTools() {
 }
 
 void Paint::updateVideo() {
-    if (updateDrawTools) {
-        drawTools();
-        updateDrawTools = false;
-    }
+    if (!reverseScreens) {
+        if (updateDrawTools) {
+            drawTools();
+            updateDrawTools = false;
+        }
 
-    if (updateDrawColors) {
-        drawColors();
-        updateDrawColors = false;
-    }
+        if (updateDrawColors) {
+            drawColors();
+            updateDrawColors = false;
+        }
 
-    if (updateDrawPaintName) {
-        drawPaintName();
-        updateDrawPaintName = false;
-    }
+        if (updateDrawHints) {
+            drawHints();
+            updateDrawHints = false;
+        }
 
-    if (updateDrawPaintIcon) {
-        drawPaintIcon();
-        updateDrawPaintIcon = false;
-    }
+        if (updateDrawPaintName) {
+            drawPaintName();
+            updateDrawPaintName = false;
+        }
 
-    tools[selectedTool]->updateTool(*this);
+        if (updateDrawPaintIcon) {
+            drawPaintIcon();
+            updateDrawPaintIcon = false;
+        }
+
+        tools[selectedTool]->updateTool(*this);
+    }
 
     VBlankIntrWait();
     dmaCopy(pixelBufferMain, videoMemory, sizeof(pixelBufferMain));
@@ -192,6 +202,18 @@ void Paint::drawColors() {
     int bs = (selectedColorSub >> 10) & 31;
     string colorSubString = string("RGB: ") + intToChars(rs) + " " + intToChars(gs) + " " + intToChars(bs); 
     drawText(21, SCREEN_HEIGHT - 15, colorSubString.c_str(), pixelBufferMain, blackColor);
+}
+
+void Paint::drawHints() {
+    int xOffset = 100;
+    int yOffset = SCREEN_HEIGHT - 34;
+    clearBuffer(xOffset, yOffset, 80, 30, pixelBufferMain);
+    drawLButton(xOffset, yOffset, pixelBufferMain);
+    drawRButton(xOffset += 10, yOffset, pixelBufferMain);
+    drawStartButton(xOffset += 10, yOffset, pixelBufferMain);
+    xOffset = 100;
+    yOffset += 10;
+    tools[selectedTool]->drawHints(*this, xOffset, yOffset, pixelBufferMain);
 }
 
 void Paint::drawPaintName() {
@@ -712,11 +734,6 @@ void Paint::drawStartButton(int x, int y, u16* buffer) {
 
 void Paint::drawSelectButton(int x, int y, u16* buffer) {
     drawSprite(x, y, 32, 32, 24, 24, 8, 8, buttons_iconBitmap, buffer);
-}
-
-void Paint::drawScrollBox(int x, int y, int size, int scroll, u16* buffer) {
-    drawLine(x, y, x + size - 1, y, pixelBufferMain, blackColor);
-    drawSquareOutline(x + scroll - 1, y + 2, 3, 4, pixelBufferMain, blackColor);
 }
 
 u16 Paint::getThemeColor(int theme) {

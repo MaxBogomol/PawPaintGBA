@@ -87,6 +87,7 @@ class Paint {
         bool updateDrawSelectedColor = false;
         bool updateDrawTools = true;
         bool updateDrawColors = true;
+        bool updateDrawHints = true;
         bool updateDrawPaintName = true;
         bool updateDrawPaintIcon = true;
 
@@ -110,6 +111,7 @@ class Paint {
 
         void drawTools();
         void drawColors();
+        void drawHints();
         void drawPaintName();
         void drawPaintIcon();
 
@@ -171,7 +173,6 @@ class Paint {
         void drawRButton(int x, int y, u16* buffer);
         void drawStartButton(int x, int y, u16* buffer);
         void drawSelectButton(int x, int y, u16* buffer);
-        void drawScrollBox(int x, int y, int size, int scroll, u16* buffer);
 
         u16 getThemeColor(int theme);
         u16 getSelectedThemeColor();

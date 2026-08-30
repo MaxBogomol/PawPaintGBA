@@ -41,6 +41,7 @@ void Brush::update(Paint& paint) {
                 active = !active;
                 activeNoise = false;
                 updateDrawTool = true;
+                paint.updateDrawHints = true;
             }
         }
 
@@ -51,10 +52,12 @@ void Brush::update(Paint& paint) {
             if ((keysD & KEY_UP) && (line - 1 >= 0)) {
                 line--;
                 updateDrawTool = true;
+                paint.updateDrawHints = true;
             }
             if ((keysD & KEY_DOWN) && (line + 1 < maxLine)) {
                 line++;
                 updateDrawTool = true;
+                paint.updateDrawHints = true;
             }
         }
 
@@ -266,6 +269,22 @@ void Brush::drawIcon(Paint& paint, int x, int y, u16* buffer) {
     paint.drawSprite(x, y, 16, 16, iconSprite, buffer);
 }
 
+void Brush::drawHints(Paint& paint, int x, int y, u16* buffer) {
+    int xOffset = 0;
+    int yOffset = 0;
+    paint.drawUpDownButton(x + xOffset, y + yOffset, pixelBufferMain);
+    xOffset += 10;
+    if (active) {
+        paint.drawLeftRightButton(x + xOffset, y + yOffset, pixelBufferMain);
+        xOffset += 10;
+    }
+    if (line > 1) {
+        paint.drawAButton(x + xOffset, y + yOffset, pixelBufferMain);
+    } else {
+        paint.drawLeftRightButton(x + xOffset, y + yOffset, pixelBufferMain);
+    }
+}
+
 void Brush::drawLine(Paint& paint, int x0, int y0, int x1, int y1, u16* buffer, u16 color) {
     int dx =  abs(x1 - x0), sx = x0 < x1 ? 1 : -1;
     int dy = -abs(y1 - y0), sy = y0 < y1 ? 1 : -1;
@@ -317,13 +336,10 @@ void Brush::drawLine(Paint& paint, int x0, int y0, int x1, int y1, u16* buffer, 
 
 void Brush::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    int bOffset = paint.getToolsButtonsOffset();
     paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
 
     string typeString = string((line == 0) ? ">" : "") + STR_BRUSH_TYPE + ": " + getTypeName(paint, type); 
     paint.drawText(3, yOffset, typeString.c_str(), pixelBufferMain, blackColor);
-    paint.drawLeftButton(SCREEN_WIDTH - bOffset - 16 - 5, yOffset, pixelBufferMain);
-    paint.drawRightButton(SCREEN_WIDTH - bOffset - 8, yOffset, pixelBufferMain);
 
     yOffset += 10;
 
@@ -332,21 +348,18 @@ void Brush::drawTool(Paint& paint) {
     	case 3: {
             string sizeString = string((line == 1) ? ">" : "") + STR_BRUSH_SIZE + ": " + paint.intToChars(squareSize);
             paint.drawText(3, yOffset, sizeString.c_str(), pixelBufferMain, blackColor);
-            paint.drawScrollBox(SCREEN_WIDTH - bOffset - 64, yOffset + 1, 64, squareSize - 1, pixelBufferMain);
             break;
         }
         case 1:
         case 4: {
             string diameterString = string((line == 1) ? ">" : "") + STR_BRUSH_DIAMETER + ": " + paint.intToChars(circleDiameter);
             paint.drawText(3, yOffset, diameterString.c_str(), pixelBufferMain, blackColor);
-            paint.drawScrollBox(SCREEN_WIDTH - bOffset - 64, yOffset + 1, 64, circleDiameter - 1, pixelBufferMain);
             break;
         }
         case 2:
         case 5: {
             string radiusString = string((line == 1) ? ">" : "") + STR_BRUSH_RADIUS + ": " + paint.intToChars(dotRadius);
             paint.drawText(3, yOffset, radiusString.c_str(), pixelBufferMain, blackColor);
-            paint.drawScrollBox(SCREEN_WIDTH - bOffset - 32, yOffset + 1, 32, dotRadius - 1, pixelBufferMain);
             break;
         }
     }
@@ -354,18 +367,12 @@ void Brush::drawTool(Paint& paint) {
     if (type >= 3) {
         string noiseSizeString = string((line == 2 && !active) ? ">" : "") + STR_BRUSH_NOISE_SIZE + ": " + ((line == 2 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXSize) + " " + ((line == 2 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYSize);
         paint.drawText(3, yOffset += 10, noiseSizeString.c_str(), pixelBufferMain, blackColor);
-        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 40, yOffset + 1, 16, noiseXSize - 1, pixelBufferMain);
-        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 16, yOffset + 1, 16, noiseYSize - 1, pixelBufferMain);
 
         string noiseShiftString = string((line == 3 && !active) ? ">" : "") + STR_BRUSH_NOISE_SHIFT + ": " + ((line == 3 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXShift) + " " + ((line == 3 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYShift);
         paint.drawText(3, yOffset += 10, noiseShiftString.c_str(), pixelBufferMain, blackColor);
-        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 40, yOffset + 1, 16, noiseXShift, pixelBufferMain);
-        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 16, yOffset + 1, 16, noiseYShift, pixelBufferMain);
 
         string noiseOffsetString = string((line == 4 && !active) ? ">" : "") + STR_BRUSH_NOISE_OFFSET + ": " + ((line == 4 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXOffset) + " " + ((line == 4 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYOffset);
         paint.drawText(3, yOffset += 10, noiseOffsetString.c_str(), pixelBufferMain, blackColor);
-        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 40, yOffset + 1, 16, noiseXOffset, pixelBufferMain);
-        paint.drawScrollBox(SCREEN_WIDTH - bOffset - 16, yOffset + 1, 16, noiseYOffset, pixelBufferMain);
     }
 }
 

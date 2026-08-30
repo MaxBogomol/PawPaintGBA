@@ -23,4 +23,5 @@ class Tool {
         virtual void redraw(Paint& paint) {}
 
         virtual void drawIcon(Paint& paint, int x, int y, u16* buffer) {}
+        virtual void drawHints(Paint& paint, int x, int y, u16* buffer) {}
 };

@@ -109,25 +109,24 @@ void Settings::drawIcon(Paint& paint, int x, int y, u16* buffer) {
     paint.drawSprite(x, y, 16, 16, settings_iconBitmap, pixelBufferMain);
 }
 
+void Settings::drawHints(Paint& paint, int x, int y, u16* buffer) {
+    int xOffset = 0;
+    paint.drawUpDownButton(x + xOffset, y, pixelBufferMain);
+    paint.drawLeftRightButton(x + (xOffset += 10), y, pixelBufferMain);
+}
+
 void Settings::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    int bOffset = paint.getToolsButtonsOffset();
     paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 34, pixelBufferMain);
 
     string themeString = string((line == 0) ? ">" : "") + STR_SETTINGS_THEME + ": " + getThemeName(paint, paint.selectedTheme);
     paint.drawText(3, yOffset, themeString.c_str(), pixelBufferMain, blackColor);
-    paint.drawLeftButton(SCREEN_WIDTH - bOffset - 16 - 5, yOffset, pixelBufferMain);
-    paint.drawRightButton(SCREEN_WIDTH - bOffset - 8, yOffset, pixelBufferMain);
 
     string iconString = string((line == 1) ? ">" : "") + STR_SETTINGS_ICON + ": " + getIconName(paint, paint.selectedIcon);
     paint.drawText(3, yOffset += 10, iconString.c_str(), pixelBufferMain, blackColor);
-    paint.drawLeftButton(SCREEN_WIDTH - bOffset - 16 - 5, yOffset, pixelBufferMain);
-    paint.drawRightButton(SCREEN_WIDTH - bOffset - 8, yOffset, pixelBufferMain);
 
     string languageString = string((line == 2) ? ">" : "") + STR_SETTINGS_LANGUAGE + ": " + STR_LANGUAGE;
     paint.drawText(3, yOffset += 10, languageString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
-    paint.drawLeftButton(SCREEN_WIDTH - bOffset - 16 - 5, yOffset, pixelBufferMain);
-    paint.drawRightButton(SCREEN_WIDTH - bOffset - 8, yOffset, pixelBufferMain);
 }
 
 const char* Settings::getThemeName(Paint& paint, int theme) {
