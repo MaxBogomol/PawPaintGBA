@@ -19,6 +19,7 @@
 
 void Paint::setup() {
     firstFrameTool = true;
+    updateLayers = false;
 
     selectedTheme = 0;
     selectedIcon = 0;
@@ -203,6 +204,20 @@ void Paint::drawPaintIcon() {
     drawSprite(SCREEN_WIDTH - 32 - 3, SCREEN_HEIGHT - 32 - 3, 32, 32, getSelectedIconSprite(), pixelBufferMain);
 }
 
+void Paint::blendLayers(int x, int y) {
+    if (x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT) {
+        pixelBufferMain[x + (y * SCREEN_WIDTH)] = pixelBufferCanvas[x + (y * SCREEN_WIDTH)];
+    }
+}
+
+void Paint::updateLayersEnable() {
+    updateLayers = true;
+}
+
+void Paint::updateLayersDisable() {
+    updateLayers = false;
+}
+
 u16 Paint::getSelectedColor() {
 	return selectedColor;
 }
@@ -218,7 +233,7 @@ void Paint::drawPixel(int x, int y, u16* buffer, u16 color) {
 	if (x >= 0 && x < SCREEN_WIDTH && y >= 0 && y < SCREEN_HEIGHT) {
 		if (getPixel(x, y, buffer) != color) {
             buffer[x + (y * SCREEN_WIDTH)] = color;
-		    //if (updateSubLayers) blendSubLayers(x, y);
+		    if (updateLayers) blendLayers(x, y);
         }
 	}
 }
@@ -490,6 +505,17 @@ void Paint::drawCharOutline(int x, int y, u32 c, u16* buffer, u16 color, u16 out
         }
     }
     drawChar(x, y, c, buffer, color);
+}
+
+void Paint::drawTextOutline(int x, int y, const char* text, u16* buffer, u16 color, u16 outlineColor) {
+    const char* textPtr = text;
+
+    while (*textPtr) {
+        u32 charCode = decodeChar(&textPtr);
+
+        drawCharOutline(x, y, charCode, buffer, color, outlineColor);
+        x += getCharLength(charCode);
+    }
 }
 
 void Paint::drawSprite(int x0, int y0, int x1, int y1, int xShift, int yShift, int xSize, int ySize, const unsigned int* spriteBitmap, u16* buffer) {

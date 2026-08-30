@@ -69,6 +69,7 @@ struct HSV {
 class Paint {
     private:
         bool firstFrameTool = true;
+        bool updateLayers = false;
 
         const char* paintName = "Unnamed";
 
@@ -111,6 +112,10 @@ class Paint {
         void drawColors();
         void drawPaintName();
         void drawPaintIcon();
+
+        void blendLayers(int x, int y);
+        void updateLayersEnable();
+        void updateLayersDisable();
 
         u16 getSelectedColor();
 

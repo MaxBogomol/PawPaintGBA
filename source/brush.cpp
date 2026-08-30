@@ -212,10 +212,15 @@ void Brush::update(Paint& paint) {
             updateDrawCursor = true;
         }
         if (keysH & KEY_A) {
-            //paint.updateLayersEnable();
+            paint.updateLayersEnable();
             drawLine(paint, paint.cursorX, paint.cursorY, paint.cursorX, paint.cursorY, getSelectedLayer(paint), getSelectedColor(paint));
-            //paint.updateLayersDisable();
+            paint.updateLayersDisable();
         }
+
+        if (updateDrawCursor) {
+        drawCursor(paint);
+        updateDrawCursor = false;
+    }
     }
 }
 
@@ -240,6 +245,10 @@ void Brush::close(Paint& paint) {
 
     active = false;
     drawCursor(paint);
+}
+
+void Brush::reverse(Paint& paint) {
+    updateDrawCursor = true;
 }
 
 void Brush::redraw(Paint& paint) {
@@ -373,9 +382,13 @@ void Brush::drawCursor(Paint& paint, bool clear) {
     	case 5: size = dotRadius * 2; break;
     }
     size = size + 2;
+    for (int x = 0; x < size; x++) {
+        for (int y = 0; y < size; y++) {
+            paint.blendLayers(paint.cursorXOld + x - (size / 2), paint.cursorYOld + y - (size / 2));
+        }
+    }
 
-
-    //if (active && !clear) drawLine(paint, cursorX, cursorY, cursorX, cursorY, pixelBufferSub, getSelectedColor(paint));
+    if (!clear) drawLine(paint, paint.cursorX, paint.cursorY, paint.cursorX, paint.cursorY, pixelBufferMain, getSelectedColor(paint));
 
     paint.cursorXOld = paint.cursorX;
     paint.cursorYOld = paint.cursorY;

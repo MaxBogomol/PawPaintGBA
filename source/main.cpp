@@ -5,7 +5,7 @@
 Paint paint;
 
 int main(void) {
-	paint.fileSystemInit = fatInitDefault();
+	//paint.fileSystemInit = fatInitDefault();
 
     paint.setup();
 	paint.setupVideo();

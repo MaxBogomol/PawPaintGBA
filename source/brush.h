@@ -29,6 +29,7 @@ class Brush : public Tool {
         virtual void updateTool(Paint& paint) override;
         virtual void open(Paint& paint) override;
         virtual void close(Paint& paint) override;
+        virtual void reverse(Paint& paint) override;
         virtual void redraw(Paint& paint) override;
 
         virtual void drawIcon(Paint& paint, int x, int y, u16* buffer) override;
