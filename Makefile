@@ -27,7 +27,7 @@ CXXFLAGS	:=	$(CFLAGS) -fno-rtti -fno-exceptions
 ASFLAGS	:=	$(ARCH)
 LDFLAGS	=	-g $(ARCH) -Wl,-Map,$(notdir $@).map
 
-LIBS	:= -lgba
+LIBS	:= -lfat -lgba
 LIBDIRS	:= ../libs $(LIBGBA)
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))

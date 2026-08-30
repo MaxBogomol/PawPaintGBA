@@ -125,7 +125,7 @@ void Settings::drawTool(Paint& paint) {
     paint.drawSprite(SCREEN_WIDTH - bOffset - 8, yOffset, 32, 32, 8, 0, 8, 8, buttons_iconBitmap, pixelBufferMain);
 
     string languageString = string((line == 2) ? ">" : "") + STR_SETTINGS_LANGUAGE + ": " + STR_LANGUAGE;
-    paint.drawText(3, yOffset += 10, languageString.c_str(), pixelBufferMain, false ? blackColor : grayColor);
+    paint.drawText(3, yOffset += 10, languageString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
     paint.drawSprite(SCREEN_WIDTH - bOffset - 16 - 5, yOffset, 32, 32, 24, 0, 8, 8, buttons_iconBitmap, pixelBufferMain);
     paint.drawSprite(SCREEN_WIDTH - bOffset - 8, yOffset, 32, 32, 8, 0, 8, 8, buttons_iconBitmap, pixelBufferMain);
 }

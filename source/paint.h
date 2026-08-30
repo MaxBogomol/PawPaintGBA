@@ -89,6 +89,8 @@ class Paint {
         bool updateDrawPaintName = true;
         bool updateDrawPaintIcon = true;
 
+        bool fileSystemInit = false;
+
         int cursorX = 0;
         int cursorY = 0;
         int cursorXOld = 0;

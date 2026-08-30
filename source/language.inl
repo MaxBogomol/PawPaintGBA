@@ -2,7 +2,7 @@
 #endif
 
 //General
-STRING(LANGUAGE, "Unknown");
+STRING(LANGUAGE, "English");
 STRING(UNNAMED, "Unnamed");
 STRING(DESCRIPTION, "Paint with your paws on Game Boy Advance");
 

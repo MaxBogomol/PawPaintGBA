@@ -1,8 +1,12 @@
+#include <fat.h>
+
 #include "paint.h"
 
 Paint paint;
 
 int main(void) {
+	paint.fileSystemInit = fatInitDefault();
+
     paint.setup();
 	paint.setupVideo();
 	paint.setupLayers();
