@@ -241,10 +241,8 @@ void Brush::open(Paint& paint) {
 
 void Brush::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 62, pixelBufferMain);
-
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
     active = false;
-    drawCursor(paint);
 }
 
 void Brush::reverse(Paint& paint) {
@@ -320,7 +318,7 @@ void Brush::drawLine(Paint& paint, int x0, int y0, int x1, int y1, u16* buffer, 
 void Brush::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
     int bOffset = paint.getToolsButtonsOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 61, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
 
     string typeString = string((line == 0) ? ">" : "") + STR_BRUSH_TYPE + ": " + getTypeName(paint, type); 
     paint.drawText(3, yOffset, typeString.c_str(), pixelBufferMain, blackColor);

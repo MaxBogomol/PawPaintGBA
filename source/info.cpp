@@ -40,6 +40,7 @@ void Info::update(Paint& paint) {
         if ((keysD & KEY_A) || (keysD & KEY_B)) {
             showPage = false;
             updateDrawTool = true;
+            paint.updateDrawPaintName = true;
         }
     }
 }
@@ -57,7 +58,10 @@ void Info::open(Paint& paint) {
 
 void Info::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 92, pixelBufferMain);
+    int bOffset = paint.getToolsButtonsOffset();
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
+    paint.clearBuffer(SCREEN_WIDTH - bOffset - 72, yOffset + 10, 72, 72, pixelBufferMain);
+    paint.updateDrawPaintName = true;
 }
 
 void Info::redraw(Paint& paint) {
@@ -71,7 +75,8 @@ void Info::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 void Info::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
     int bOffset = paint.getToolsButtonsOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 91, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
+    paint.clearBuffer(SCREEN_WIDTH - bOffset - 72, yOffset + 10, 72, 72, pixelBufferMain);
 
     if (!showPage) {
         string aboutString = string((line == 0) ? ">" : "") + STR_INFO_ABOUT.c_str();
