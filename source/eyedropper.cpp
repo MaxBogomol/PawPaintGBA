@@ -10,13 +10,11 @@ const char* Eyedropper::getName(Paint& paint) {
 }
 
 void Eyedropper::update(Paint& paint) {
-    if (!paint.reverseScreens) {
-        if (keysD & KEY_B) {
-            u16 color = paint.selectedColorSub;
-            paint.selectedColorSub = paint.selectedColor;
-            paint.selectedColor = color;
-            paint.updateDrawColors = true;
-        }
+    if (keysD & KEY_B) {
+        u16 color = paint.selectedColorSub;
+        paint.selectedColorSub = paint.selectedColor;
+        paint.selectedColor = color;
+        if (!paint.reverseScreens) paint.updateDrawColors = true;
     }
 }
 
