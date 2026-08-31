@@ -21,7 +21,33 @@ void Saving::setup(Paint& paint) {
 }
 
 void Saving::update(Paint& paint) {
-    
+    if (!paint.reverseScreens) {
+        int maxLine = 6;
+
+        if ((keysD & KEY_UP) && (line - 1 >= 0)) {
+            line--;
+            updateDrawTool = true;
+            paint.updateDrawHints = true;
+        }
+        if ((keysD & KEY_DOWN) && (line + 1 < maxLine)) {
+            line++;
+            updateDrawTool = true;
+            paint.updateDrawHints = true;
+        }
+
+        if (keysD & KEY_A) {
+            if (line == 0) {
+                paint.clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferCanvas, paint.selectedColorSub);
+                paint.setPaintName(STR_UNNAMED.c_str());
+                paint.updateDrawPaintName = true;
+            }
+        }
+
+        if (doneTimer > 0)  {
+            doneTimer--;
+            paint.updateDrawTools = true;
+        }
+    }
 }
 
 void Saving::updateTool(Paint& paint) {

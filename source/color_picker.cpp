@@ -28,84 +28,84 @@ void ColorPicker::setup(Paint& paint) {
 }
 
 void ColorPicker::update(Paint& paint) {
-    if (!active) {
-        if (keysD & KEY_A) {
-            active = true;
+    if (!paint.reverseScreens) {
+        if (!active) {
+            if (keysD & KEY_A) {
+                active = true;
 
-            paint.clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
+                paint.clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
 
-            drawHue(paint);
-            drawOutlines(paint);
+                drawHue(paint);
+                drawOutlines(paint);
 
-            updatePicker = true;
-            updateHue = true;
-            updateSelected = true;
-            updateNewSelected = true;
-        }
-    } else {
-        bool setNewColor = false;
-
-        if (keysD & KEY_A) {
-            selectedColor = newSelectedColor;
-            paint.selectedColor = newSelectedColor;
-            updateSelected = true;
-        }
-
-        if (keysH & KEY_B) {
-            if (keysR & KEY_UP) {
-                hue--;
-                if (hue < 0) hue = 359;
                 updatePicker = true;
                 updateHue = true;
+                updateSelected = true;
                 updateNewSelected = true;
-                setNewColor = true;
-            }
-            if (keysR & KEY_DOWN) {
-                hue++;
-                if (hue >= 360) hue = 0;
-                updatePicker = true;
-                updateHue = true;
-                updateNewSelected = true;
-                setNewColor = true;
             }
         } else {
-            if ((keysR & KEY_LEFT) && (colorX - 1 >= 0)) {
-                colorX--;
-                updatePicker = true;
-                updateNewSelected = true;
-                setNewColor = true;
+            bool setNewColor = false;
+
+            if (keysD & KEY_A) {
+                selectedColor = newSelectedColor;
+                paint.selectedColor = newSelectedColor;
+                updateSelected = true;
             }
-            if ((keysR & KEY_RIGHT) && (colorX + 1 < 32)) {
-                colorX++;
-                updatePicker = true;
-                updateNewSelected = true;
-                setNewColor = true;
+
+            if (keysH & KEY_B) {
+                if (keysR & KEY_UP) {
+                    hue--;
+                    if (hue < 0) hue = 359;
+                    updatePicker = true;
+                    updateHue = true;
+                    updateNewSelected = true;
+                    setNewColor = true;
+                }
+                if (keysR & KEY_DOWN) {
+                    hue++;
+                    if (hue >= 360) hue = 0;
+                    updatePicker = true;
+                    updateHue = true;
+                    updateNewSelected = true;
+                    setNewColor = true;
+                }
+            } else {
+                if ((keysR & KEY_LEFT) && (colorX - 1 >= 0)) {
+                    colorX--;
+                    updatePicker = true;
+                    updateNewSelected = true;
+                    setNewColor = true;
+                }
+                if ((keysR & KEY_RIGHT) && (colorX + 1 < 32)) {
+                    colorX++;
+                    updatePicker = true;
+                    updateNewSelected = true;
+                    setNewColor = true;
+                }
+                if ((keysR & KEY_UP) && (colorY - 1 >= 0)) {
+                    colorY--;
+                    updatePicker = true;
+                    updateNewSelected = true;
+                    setNewColor = true;
+                }
+                if ((keysR & KEY_DOWN) && (colorY + 1 < 32)) {
+                    colorY++;
+                    updatePicker = true;
+                    updateNewSelected = true;
+                    setNewColor = true;
+                }
             }
-            if ((keysR & KEY_UP) && (colorY - 1 >= 0)) {
-                colorY--;
-                updatePicker = true;
-                updateNewSelected = true;
-                setNewColor = true;
+
+            if (setNewColor) {
+                newSelectedColor = paint.HSVtoRGB(hue, colorX * 8, 255 - (colorY * 8));
             }
-            if ((keysR & KEY_DOWN) && (colorY + 1 < 32)) {
-                colorY++;
-                updatePicker = true;
-                updateNewSelected = true;
-                setNewColor = true;
+
+            if (keysD & KEY_SELECT) {
+                active = false;
+                paint.updateDrawAll = true;
             }
         }
 
-        if (setNewColor) {
-            newSelectedColor = paint.HSVtoRGB(hue, colorX * 8, 255 - (colorY * 8));
-        }
-
-        if (keysD & KEY_SELECT) {
-            active = false;
-            paint.updateDrawAll = true;
-        }
-    }
-
-    if (!paint.reverseScreens) {
         if (updatePicker) {
             drawPicker(paint);
             drawPickerPointers(paint);
@@ -298,11 +298,11 @@ void ColorPicker::drawHuePointer(Paint& paint) {
 }
 
 void ColorPicker::clearSelectedColor(Paint& paint) {
-    paint.clearBuffer(4, 148, 48, 10, pixelBufferMain);
+    paint.clearBuffer(3, 147, 48, 10, pixelBufferMain);
 }
 
 void ColorPicker::clearNewSelectedColor(Paint& paint) {
-    paint.clearBuffer(4, 4, 48, 10, pixelBufferMain);
+    paint.clearBuffer(3, 3, 48, 10, pixelBufferMain);
 }
 
 void ColorPicker::clearPickerPointers(Paint& paint) {

@@ -50,7 +50,7 @@ void Paint::setupVideo() {
 
 void Paint::setupLayers() {
     clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferMain);
-    clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferCanvas, whiteColor);
+    clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferCanvas, selectedColorSub);
 }
 
 void Paint::setupTools() {
