@@ -49,6 +49,13 @@ void ColorPicker::update(Paint& paint) {
                 paint.selectedColorSub = paint.selectedColor;
                 paint.selectedColor = color;
                 paint.updateDrawColors = true;
+                selectedColor = paint.selectedColor;
+                newSelectedColor = paint.selectedColor;
+
+                HSV hsv = paint.RGBtoHSV(selectedColor);
+                hue = hsv.h;
+                colorX = hsv.s / 8;
+                colorY = (255 - hsv.v) / 8;
             }
         } else {
             bool setNewColor = false;
