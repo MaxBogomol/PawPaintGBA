@@ -36,6 +36,13 @@ void Brush::setup(Paint& paint) {
 
 void Brush::update(Paint& paint) {
     if (!paint.reverseScreens) {
+        if (keysD & KEY_B) {
+            u16 color = paint.selectedColorSub;
+            paint.selectedColorSub = paint.selectedColor;
+            paint.selectedColor = color;
+            paint.updateDrawColors = true;
+        }
+
         if (keysD & KEY_A) {
             if (line >= 2) {
                 active = !active;
@@ -283,6 +290,9 @@ void Brush::drawHints(Paint& paint, int x, int y, u16* buffer) {
     } else {
         paint.drawLeftRightButton(x + xOffset, y + yOffset, pixelBufferMain);
     }
+    xOffset = 0;
+    yOffset += 10;
+    paint.drawBButton(x + xOffset, y + yOffset, pixelBufferMain);
 }
 
 void Brush::drawLine(Paint& paint, int x0, int y0, int x1, int y1, u16* buffer, u16 color) {

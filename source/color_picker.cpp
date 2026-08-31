@@ -43,6 +43,13 @@ void ColorPicker::update(Paint& paint) {
                 updateSelected = true;
                 updateNewSelected = true;
             }
+
+            if (keysD & KEY_B) {
+                u16 color = paint.selectedColorSub;
+                paint.selectedColorSub = paint.selectedColor;
+                paint.selectedColor = color;
+                paint.updateDrawColors = true;
+            }
         } else {
             bool setNewColor = false;
 
@@ -182,9 +189,12 @@ void ColorPicker::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 }
 
 void ColorPicker::drawHints(Paint& paint, int x, int y, u16* buffer) {
-    int xOffset = -10;
+    int xOffset = 0;
     int yOffset = 0;
-    paint.drawAButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
+    paint.drawAButton(x + xOffset, y + yOffset, pixelBufferMain);
+    xOffset = 0;
+    yOffset += 10;
+    paint.drawBButton(x + xOffset, y + yOffset, pixelBufferMain);
 }
 
 void ColorPicker::drawTool(Paint& paint) {
