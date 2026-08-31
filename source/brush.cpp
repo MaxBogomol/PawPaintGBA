@@ -35,14 +35,18 @@ void Brush::setup(Paint& paint) {
 }
 
 void Brush::update(Paint& paint) {
-    if (!paint.reverseScreens) {
-        if (keysD & KEY_B) {
-            u16 color = paint.selectedColorSub;
-            paint.selectedColorSub = paint.selectedColor;
-            paint.selectedColor = color;
+    if (keysD & KEY_B) {
+        u16 color = paint.selectedColorSub;
+        paint.selectedColorSub = paint.selectedColor;
+        paint.selectedColor = color;
+        if (!paint.reverseScreens) {
             paint.updateDrawColors = true;
+        } else {
+            updateDrawCursor = true;
         }
+    }
 
+    if (!paint.reverseScreens) {
         if (keysD & KEY_A) {
             if (line >= 2) {
                 active = !active;
