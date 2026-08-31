@@ -189,12 +189,12 @@ void ColorPicker::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 }
 
 void ColorPicker::drawHints(Paint& paint, int x, int y, u16* buffer) {
-    int xOffset = 0;
+    int xOffset = -10;
     int yOffset = 0;
-    paint.drawAButton(x + xOffset, y + yOffset, pixelBufferMain);
-    xOffset = 0;
+    paint.drawAButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
+    xOffset = -10;
     yOffset += 10;
-    paint.drawBButton(x + xOffset, y + yOffset, pixelBufferMain);
+    paint.drawBButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
 }
 
 void ColorPicker::drawTool(Paint& paint) {

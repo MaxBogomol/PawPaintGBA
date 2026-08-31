@@ -25,7 +25,7 @@ void Eyedropper::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 }
 
 void Eyedropper::drawHints(Paint& paint, int x, int y, u16* buffer) {
-    int xOffset = 0;
+    int xOffset = -10;
     int yOffset = 0;
-    paint.drawBButton(x + xOffset, y + yOffset, pixelBufferMain);
+    paint.drawBButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
 }

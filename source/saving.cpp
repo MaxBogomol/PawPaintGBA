@@ -83,10 +83,11 @@ void Saving::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 }
 
 void Saving::drawHints(Paint& paint, int x, int y, u16* buffer) {
-    int xOffset = 0;
+    int xOffset = -10;
+    int yOffset = 0;
     if (line == 0 || paint.fileSystemInit) {
-        paint.drawUpDownButton(x + xOffset, y, pixelBufferMain);
-        paint.drawAButton(x + (xOffset += 10), y, pixelBufferMain);
+        paint.drawUpDownButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
+        paint.drawAButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
     }
 }
 

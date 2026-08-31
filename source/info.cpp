@@ -76,8 +76,9 @@ void Info::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 
 void Info::drawHints(Paint& paint, int x, int y, u16* buffer) {
     int xOffset = -10;
-    if (!showPage) paint.drawUpDownButton(x + (xOffset += 10), y, pixelBufferMain);
-    paint.drawAButton(x + (xOffset += 10), y, pixelBufferMain);
+    int yOffset = 0;
+    if (!showPage) paint.drawUpDownButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
+    paint.drawAButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
 }
 
 void Info::drawTool(Paint& paint) {

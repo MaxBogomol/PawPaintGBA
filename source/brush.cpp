@@ -277,22 +277,20 @@ void Brush::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 }
 
 void Brush::drawHints(Paint& paint, int x, int y, u16* buffer) {
-    int xOffset = 0;
+    int xOffset = -10;
     int yOffset = 0;
-    paint.drawUpDownButton(x + xOffset, y + yOffset, pixelBufferMain);
-    xOffset += 10;
+    paint.drawUpDownButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
     if (active) {
-        paint.drawLeftRightButton(x + xOffset, y + yOffset, pixelBufferMain);
-        xOffset += 10;
+        paint.drawLeftRightButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
     }
     if (line > 1) {
-        paint.drawAButton(x + xOffset, y + yOffset, pixelBufferMain);
+        paint.drawAButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
     } else {
-        paint.drawLeftRightButton(x + xOffset, y + yOffset, pixelBufferMain);
+        paint.drawLeftRightButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
     }
-    xOffset = 0;
+    xOffset = -10;
     yOffset += 10;
-    paint.drawBButton(x + xOffset, y + yOffset, pixelBufferMain);
+    paint.drawBButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
 }
 
 void Brush::drawLine(Paint& paint, int x0, int y0, int x1, int y1, u16* buffer, u16 color) {
