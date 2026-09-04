@@ -227,7 +227,7 @@ void Brush::update(Paint& paint) {
         }
         if (keysH & KEY_A) {
             paint.updateLayersEnable();
-            drawLine(paint, paint.cursorX, paint.cursorY, paint.cursorX, paint.cursorY, getSelectedLayer(paint), getSelectedColor(paint));
+            drawLine(paint, paint.cursorX, paint.cursorY, paint.cursorX, paint.cursorY, pixelBufferCanvas, getSelectedColor(paint));
             paint.updateLayersDisable();
         }
 
@@ -399,12 +399,7 @@ void Brush::drawCursor(Paint& paint, bool clear) {
     	case 5: size = dotRadius * 2; break;
     }
     size = size + 2;
-    for (int x = 0; x < size; x++) {
-        for (int y = 0; y < size; y++) {
-            paint.blendLayers(paint.cursorXOld + x - (size / 2), paint.cursorYOld + y - (size / 2));
-        }
-    }
-
+    paint.blendLayers(paint.cursorXOld - (size / 2), paint.cursorYOld - (size / 2), size, size);
     if (!clear) drawLine(paint, paint.cursorX, paint.cursorY, paint.cursorX, paint.cursorY, pixelBufferMain, getSelectedColor(paint));
 
     paint.cursorXOld = paint.cursorX;
@@ -425,10 +420,6 @@ const char* Brush::getTypeName(Paint& paint, int type) {
 		case 5: return STR_BRUSH_TYPE_DOT_NOISE.c_str();
     }
 	return "Type";
-}
-
-u16 *Brush::getSelectedLayer(Paint& paint) {
-    return pixelBufferCanvas;//paint.getSelectedLayer();
 }
 
 u16 Brush::getSelectedColor(Paint& paint) {

@@ -669,6 +669,14 @@ void Paint::clearBuffer(int x0, int y0, int x1, int y1, u16* buffer) {
     clearBuffer(x0, y0, x1, y1, buffer, getSelectedThemeColor());
 }
 
+void Paint::blendLayers(int x0, int y0, int x1, int y1) {
+    for (int x = 0; x < x1; x++) {
+        for (int y = 0; y < y1; y++) {
+            blendLayers(x0 + x, y0 + y);
+        }
+    }
+}
+
 int Paint::getToolYOffset() {
     return 24;
 }

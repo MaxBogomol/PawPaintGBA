@@ -207,10 +207,10 @@ void ColorPicker::drawHints(Paint& paint, int x, int y, u16* buffer) {
 void ColorPicker::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
     int bOffset = paint.getToolsButtonsOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 64, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 14, pixelBufferMain);
 
-    string moveString = string((line == 0) ? ">" : "") + STR_COLOR_PICKER_COLOR + ": " + ((line == 0 && active) ? "+" : "-"); 
-    paint.drawText(3, yOffset, moveString.c_str(), pixelBufferMain, blackColor);
+    string colorString = string((line == 0) ? ">" : "") + STR_COLOR_PICKER_COLOR + ": " + ((line == 0 && active) ? "+" : "-"); 
+    paint.drawText(3, yOffset, colorString.c_str(), pixelBufferMain, blackColor);
     paint.drawAButton(SCREEN_WIDTH - bOffset - 8, yOffset, pixelBufferMain);
 }
 

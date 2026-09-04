@@ -42,6 +42,5 @@ class Brush : public Tool {
 
         virtual const char* getTypeName(Paint& paint, int type);
 
-        virtual u16 *getSelectedLayer(Paint& paint);
         virtual u16 getSelectedColor(Paint& paint);
 };

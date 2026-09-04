@@ -157,6 +157,7 @@ class Paint {
 
         void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer, u16 color);
         void clearBuffer(int x0, int y0, int x1, int y1, u16* buffer);
+        void blendLayers(int x0, int y0, int x1, int y1);
 
         int getToolYOffset();
         int getToolsYOffset();
