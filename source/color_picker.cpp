@@ -166,9 +166,10 @@ void ColorPicker::open(Paint& paint) {
 }
 
 void ColorPicker::close(Paint& paint) {
-    if (active) {
-        paint.updateDrawAll = true;
-    }
+    int yOffset = paint.getToolsYOffset();
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 14, pixelBufferMain);
+
+    if (active) paint.updateDrawAll = true;
 
     active = false;
 }
