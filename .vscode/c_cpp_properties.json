@@ -19,8 +19,7 @@
             },
             "defines": [
                 "_DEBUG",
-                "_UNICODE",
-                "ARM11",
+                "ARM7",
                 "__GBA__"
             ],
             "cStandard": "c11",
@@ -46,8 +45,7 @@
             },
             "defines": [
                 "_DEBUG",
-                "_UNICODE",
-                "ARM11",
+                "ARM7",
                 "__GBA__"
             ],
             "cStandard": "c11",
