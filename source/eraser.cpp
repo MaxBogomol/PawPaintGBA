@@ -29,5 +29,5 @@ void Eraser::drawIcon(Paint& paint, int x, int y, u16* buffer) {
 }
 
 u16 Eraser::getSelectedColor(Paint& paint) {
-    return paint.selectedColorSub;
+    return paint.getSecondColor();
 }

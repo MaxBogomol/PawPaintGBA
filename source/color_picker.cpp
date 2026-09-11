@@ -45,8 +45,8 @@ void ColorPicker::update(Paint& paint) {
             }
 
             if (keysD & KEY_B) {
-                u16 color = paint.selectedColorSub;
-                paint.selectedColorSub = paint.selectedColor;
+                u16 color = paint.secondColor;
+                paint.secondColor = paint.selectedColor;
                 paint.selectedColor = color;
                 paint.updateDrawColors = true;
                 selectedColor = paint.selectedColor;

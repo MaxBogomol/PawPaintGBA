@@ -36,8 +36,8 @@ void Brush::setup(Paint& paint) {
 
 void Brush::update(Paint& paint) {
     if (keysD & KEY_B) {
-        u16 color = paint.selectedColorSub;
-        paint.selectedColorSub = paint.selectedColor;
+        u16 color = paint.secondColor;
+        paint.secondColor = paint.selectedColor;
         paint.selectedColor = color;
         if (!paint.reverseScreens) {
             paint.updateDrawColors = true;

@@ -37,7 +37,7 @@ void Saving::update(Paint& paint) {
 
         if (keysD & KEY_A) {
             if (line == 0) {
-                paint.clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferCanvas, paint.selectedColorSub);
+                paint.clearBuffer(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, pixelBufferCanvas, paint.secondColor);
                 paint.setPaintName(STR_UNNAMED.c_str());
                 paint.updateDrawPaintName = true;
             }
