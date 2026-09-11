@@ -67,6 +67,7 @@ void Info::close(Paint& paint) {
 }
 
 void Info::redraw(Paint& paint) {
+    showPage = false;
     updateDrawTool = true;
 }
 
