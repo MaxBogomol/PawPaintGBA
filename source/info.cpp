@@ -61,7 +61,7 @@ void Info::open(Paint& paint) {
 void Info::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
     int bOffset = paint.getToolsButtonsOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13 + 3, pixelBufferMain);
     paint.clearBuffer(SCREEN_WIDTH - bOffset - 72, yOffset + 10, 72, 72, pixelBufferMain);
     paint.updateDrawPaintName = true;
 }
@@ -85,7 +85,7 @@ void Info::drawHints(Paint& paint, int x, int y, u16* buffer) {
 void Info::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
     int bOffset = paint.getToolsButtonsOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13 + 3, pixelBufferMain);
     paint.clearBuffer(SCREEN_WIDTH - bOffset - 72, yOffset + 10, 72, 72, pixelBufferMain);
 
     if (!showPage) {
