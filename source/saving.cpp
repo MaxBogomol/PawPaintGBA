@@ -64,7 +64,7 @@ void Saving::open(Paint& paint) {
 
 void Saving::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 64, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 6 * 13, pixelBufferMain);
     doneTimer = 0;
 }
 
@@ -93,22 +93,23 @@ void Saving::drawHints(Paint& paint, int x, int y, u16* buffer) {
 
 void Saving::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 64, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 6 * 13, pixelBufferMain);
 
     string newString = string((line == 0) ? ">" : "") + STR_SAVING_NEW;
     paint.drawText(3, yOffset, newString.c_str(), pixelBufferMain, blackColor);
 
     string loadString = string((line == 1) ? ">" : "") + STR_SAVING_LOAD;
-    paint.drawText(3, yOffset += 10, loadString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
+    paint.drawText(3, yOffset += 13, loadString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
 
     string saveString = string((line == 2) ? ">" : "") + STR_SAVING_SAVE;
+    paint.drawText(3, yOffset += 13, saveString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
 
     string saveAsString = string((line == 3) ? ">" : "") + STR_SAVING_SAVE_AS;
-    paint.drawText(3, yOffset += 10, saveAsString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
+    paint.drawText(3, yOffset += 13, saveAsString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
 
     string exportString = string((line == 4) ? ">" : "") + STR_SAVING_EXPORT;
-    paint.drawText(3, yOffset += 10, exportString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
+    paint.drawText(3, yOffset += 13, exportString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
 
     string exportAsString = string((line == 5) ? ">" : "") + STR_SAVING_EXPORT_AS;
-    paint.drawText(3, yOffset += 10, exportAsString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
+    paint.drawText(3, yOffset += 13, exportAsString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
 }

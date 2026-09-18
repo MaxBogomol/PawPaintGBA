@@ -98,7 +98,7 @@ void Settings::open(Paint& paint) {
 
 void Settings::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 34, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 3 * 13, pixelBufferMain);
 }
 
 void Settings::redraw(Paint& paint) {
@@ -118,16 +118,16 @@ void Settings::drawHints(Paint& paint, int x, int y, u16* buffer) {
 
 void Settings::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 34, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 3 * 13, pixelBufferMain);
 
     string themeString = string((line == 0) ? ">" : "") + STR_SETTINGS_THEME + ": " + getThemeName(paint, paint.selectedTheme);
     paint.drawText(3, yOffset, themeString.c_str(), pixelBufferMain, blackColor);
 
     string iconString = string((line == 1) ? ">" : "") + STR_SETTINGS_ICON + ": " + getIconName(paint, paint.selectedIcon);
-    paint.drawText(3, yOffset += 10, iconString.c_str(), pixelBufferMain, blackColor);
+    paint.drawText(3, yOffset += 13, iconString.c_str(), pixelBufferMain, blackColor);
 
     string languageString = string((line == 2) ? ">" : "") + STR_SETTINGS_LANGUAGE + ": " + STR_LANGUAGE;
-    paint.drawText(3, yOffset += 10, languageString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
+    paint.drawText(3, yOffset += 13, languageString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
 }
 
 const char* Settings::getThemeName(Paint& paint, int theme) {

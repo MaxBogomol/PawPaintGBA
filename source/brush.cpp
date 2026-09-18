@@ -255,7 +255,7 @@ void Brush::open(Paint& paint) {
 
 void Brush::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 5 * 13, pixelBufferMain);
     active = false;
 }
 
@@ -348,12 +348,12 @@ void Brush::drawLine(Paint& paint, int x0, int y0, int x1, int y1, u16* buffer, 
 
 void Brush::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 5 * 13, pixelBufferMain);
 
     string typeString = string((line == 0) ? ">" : "") + STR_BRUSH_TYPE + ": " + getTypeName(paint, type); 
     paint.drawText(3, yOffset, typeString.c_str(), pixelBufferMain, blackColor);
 
-    yOffset += 10;
+    yOffset += 13;
 
     switch (type) {
         case 0:
@@ -378,13 +378,13 @@ void Brush::drawTool(Paint& paint) {
 
     if (type >= 3) {
         string noiseSizeString = string((line == 2 && !active) ? ">" : "") + STR_BRUSH_NOISE_SIZE + ": " + ((line == 2 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXSize) + " " + ((line == 2 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYSize);
-        paint.drawText(3, yOffset += 10, noiseSizeString.c_str(), pixelBufferMain, blackColor);
+        paint.drawText(3, yOffset += 13, noiseSizeString.c_str(), pixelBufferMain, blackColor);
 
         string noiseShiftString = string((line == 3 && !active) ? ">" : "") + STR_BRUSH_NOISE_SHIFT + ": " + ((line == 3 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXShift) + " " + ((line == 3 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYShift);
-        paint.drawText(3, yOffset += 10, noiseShiftString.c_str(), pixelBufferMain, blackColor);
+        paint.drawText(3, yOffset += 13, noiseShiftString.c_str(), pixelBufferMain, blackColor);
 
         string noiseOffsetString = string((line == 4 && !active) ? ">" : "") + STR_BRUSH_NOISE_OFFSET + ": " + ((line == 4 && active && !activeNoise) ? ">" : "") + paint.intToChars(noiseXOffset) + " " + ((line == 4 && active && activeNoise) ? ">" : "") + paint.intToChars(noiseYOffset);
-        paint.drawText(3, yOffset += 10, noiseOffsetString.c_str(), pixelBufferMain, blackColor);
+        paint.drawText(3, yOffset += 13, noiseOffsetString.c_str(), pixelBufferMain, blackColor);
     }
 }
 

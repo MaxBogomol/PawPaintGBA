@@ -67,9 +67,6 @@ void Eyedropper::open(Paint& paint) {
 }
 
 void Eyedropper::close(Paint& paint) {
-    int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 14, pixelBufferMain);
-
     active = false;
     drawCursor(paint);
 }

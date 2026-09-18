@@ -61,7 +61,7 @@ void Info::open(Paint& paint) {
 void Info::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
     int bOffset = paint.getToolsButtonsOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13, pixelBufferMain);
     paint.clearBuffer(SCREEN_WIDTH - bOffset - 72, yOffset + 10, 72, 72, pixelBufferMain);
     paint.updateDrawPaintName = true;
 }
@@ -85,7 +85,7 @@ void Info::drawHints(Paint& paint, int x, int y, u16* buffer) {
 void Info::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
     int bOffset = paint.getToolsButtonsOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 54, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13, pixelBufferMain);
     paint.clearBuffer(SCREEN_WIDTH - bOffset - 72, yOffset + 10, 72, 72, pixelBufferMain);
 
     if (!showPage) {
@@ -93,13 +93,13 @@ void Info::drawTool(Paint& paint) {
         paint.drawText(3, yOffset, aboutString.c_str(), pixelBufferMain, blackColor);
 
         string fluffyVillageString = string((line == 1) ? ">" : "") + "The Fluffy Village";
-        paint.drawText(3, yOffset += 10, fluffyVillageString.c_str(), pixelBufferMain, blackColor);
+        paint.drawText(3, yOffset += 13, fluffyVillageString.c_str(), pixelBufferMain, blackColor);
 
         string gitHubString = string((line == 2) ? ">" : "") + "GitHub";
-        paint.drawText(3, yOffset += 10, gitHubString.c_str(), pixelBufferMain, blackColor);
+        paint.drawText(3, yOffset += 13, gitHubString.c_str(), pixelBufferMain, blackColor);
 
         string discordString = string((line == 3) ? ">" : "") + "Discord";
-        paint.drawText(3, yOffset += 10, discordString.c_str(), pixelBufferMain, blackColor);
+        paint.drawText(3, yOffset += 13, discordString.c_str(), pixelBufferMain, blackColor);
     } else {
         switch (page) {
             case 0: {
@@ -107,38 +107,38 @@ void Info::drawTool(Paint& paint) {
                 paint.drawText(3, yOffset, pageString.c_str(), pixelBufferMain, blackColor);
 
                 string paintString = string("Paw Paint GBA") + " - " + paintVerstion;
-                paint.drawText(3, yOffset += 10, paintString.c_str(), pixelBufferMain, blackColor);
-                paint.drawText(3, yOffset += 10, STR_DESCRIPTION.c_str(), pixelBufferMain, blackColor);
+                paint.drawText(3, yOffset += 13, paintString.c_str(), pixelBufferMain, blackColor);
+                paint.drawText(3, yOffset += 13, STR_DESCRIPTION.c_str(), pixelBufferMain, blackColor);
                 string byString = STR_INFO_BY + " MaxBogomol (Pink Joke)";
-                paint.drawText(3, yOffset += 10, byString.c_str(), pixelBufferMain, blackColor);
+                paint.drawText(3, yOffset += 13, byString.c_str(), pixelBufferMain, blackColor);
                 break;
             }
             case 1: {
                 paint.drawText(3, yOffset, ">The Fluffy Village", pixelBufferMain, blackColor);
 
-                paint.drawSprite(SCREEN_WIDTH - bOffset - 72, yOffset += 10, 72, 72, qrcode_fluffyvillageBitmap, pixelBufferMain);
+                paint.drawSprite(SCREEN_WIDTH - bOffset - 72, yOffset += 13, 72, 72, qrcode_fluffyvillageBitmap, pixelBufferMain);
 
                 paint.drawText(3, yOffset, "https://fluffy-village.dev/", pixelBufferMain, blackColor);
-                paint.drawText(3, yOffset += 10, "pages/eng/creations/", pixelBufferMain, blackColor);
-                paint.drawText(3, yOffset += 10, "paw_paint.html", pixelBufferMain, blackColor);
+                paint.drawText(3, yOffset += 13, "pages/eng/creations/", pixelBufferMain, blackColor);
+                paint.drawText(3, yOffset += 13, "paw_paint.html", pixelBufferMain, blackColor);
                 break;
             }
             case 2: {
                 paint.drawText(3, yOffset, ">GitHub", pixelBufferMain, blackColor);
 
-                paint.drawSprite(SCREEN_WIDTH - bOffset - 64, yOffset += 10, 64, 64, qrcode_githubBitmap, pixelBufferMain);
+                paint.drawSprite(SCREEN_WIDTH - bOffset - 64, yOffset += 13, 64, 64, qrcode_githubBitmap, pixelBufferMain);
 
                 paint.drawText(3, yOffset, "https://github.com/MaxBogomol/", pixelBufferMain, blackColor);
-                paint.drawText(3, yOffset += 10, "PawPaintGBA", pixelBufferMain, blackColor);
+                paint.drawText(3, yOffset += 13, "PawPaintGBA", pixelBufferMain, blackColor);
                 break;
             }
             case 3: {
                 paint.drawText(3, yOffset, ">Discord", pixelBufferMain, blackColor);
 
-                paint.drawSprite(SCREEN_WIDTH - bOffset - 64, yOffset += 10, 64, 64, qrcode_discordBitmap, pixelBufferMain);
+                paint.drawSprite(SCREEN_WIDTH - bOffset - 64, yOffset += 13, 64, 64, qrcode_discordBitmap, pixelBufferMain);
 
                 paint.drawText(3, yOffset, "https://discord.fluffy-village", pixelBufferMain, blackColor);
-                paint.drawText(3, yOffset += 10, ".dev/", pixelBufferMain, blackColor);
+                paint.drawText(3, yOffset += 13, ".dev/", pixelBufferMain, blackColor);
                 break;
             }
         }
