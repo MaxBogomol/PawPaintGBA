@@ -26,4 +26,6 @@ class Settings : public Tool {
 
         virtual const char* getThemeName(Paint& paint, int theme);
         virtual const char* getIconName(Paint& paint, int icon);
+
+        virtual void setDefaultSetting(Paint& paint);
 };

@@ -22,15 +22,17 @@ void Settings::update(Paint& paint) {
         updateTheme = false;
     }
 
-    int maxLine = 3;
+    int maxLine = 4;
 
     if ((keysD & KEY_UP) && (line - 1 >= 0)) {
         line--;
         updateDrawTool = true;
+        paint.updateDrawHints = true;
     }
     if ((keysD & KEY_DOWN) && (line + 1 < maxLine)) {
         line++;
         updateDrawTool = true;
+        paint.updateDrawHints = true;
     }
 
     switch (line) {
@@ -81,6 +83,14 @@ void Settings::update(Paint& paint) {
             }
             break;
         }
+        case 3: {
+            if (keysD & KEY_A) {
+                setDefaultSetting(paint);
+                paint.updateDrawAll = true;
+                paint.readSelectedLanguage();
+            }
+            break;
+        }
     }
 }
 
@@ -98,7 +108,7 @@ void Settings::open(Paint& paint) {
 
 void Settings::close(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 3 * 13 + 3, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13 + 3, pixelBufferMain);
 }
 
 void Settings::redraw(Paint& paint) {
@@ -113,12 +123,16 @@ void Settings::drawHints(Paint& paint, int x, int y, u16* buffer) {
     int xOffset = -10;
     int yOffset = 0;
     paint.drawUpDownButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
-    paint.drawLeftRightButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
+    if (line < 3) {
+        paint.drawLeftRightButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
+    } else {
+        paint.drawAButton(x + (xOffset += 10), y + yOffset, pixelBufferMain);
+    }
 }
 
 void Settings::drawTool(Paint& paint) {
     int yOffset = paint.getToolsYOffset();
-    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 3 * 13 + 3, pixelBufferMain);
+    paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13 + 3, pixelBufferMain);
 
     string themeString = string((line == 0) ? ">" : "") + STR_SETTINGS_THEME + ": " + getThemeName(paint, paint.selectedTheme);
     paint.drawText(3, yOffset, themeString.c_str(), pixelBufferMain, blackColor);
@@ -128,6 +142,9 @@ void Settings::drawTool(Paint& paint) {
 
     string languageString = string((line == 2) ? ">" : "") + STR_SETTINGS_LANGUAGE + ": " + STR_LANGUAGE;
     paint.drawText(3, yOffset += 13, languageString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
+
+    string defaultString = string((line == 3) ? ">" : "") + STR_SETTINGS_DEFAULT;
+    paint.drawText(3, yOffset += 13, defaultString.c_str(), pixelBufferMain, blackColor);
 }
 
 const char* Settings::getThemeName(Paint& paint, int theme) {
@@ -146,4 +163,10 @@ const char* Settings::getIconName(Paint& paint, int icon) {
         case 1: return STR_ICON_MONOCHROME.c_str(); break;
     }
     return STR_ICON_PRIDE.c_str();
+}
+
+void Settings::setDefaultSetting(Paint& paint) {
+    paint.selectedTheme = 0;
+    paint.selectedIcon = 0;
+    paint.selectedLanguage = 0;
 }

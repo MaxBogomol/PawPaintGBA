@@ -745,6 +745,12 @@ const char* Paint::intToChars(int val) {
     return buf;
 }
 
+int Paint::charsToInt(const char* buf) {
+    int val = 0;
+    sscanf(buf, "%d", &val);
+    return val;
+}
+
 u32 Paint::decodeChar(const char** c) {
     const unsigned char* p = (const unsigned char*)*c;
     u32 code = 0;
