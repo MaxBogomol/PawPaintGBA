@@ -2,6 +2,7 @@
 
 #include <gba.h>
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -30,7 +31,7 @@ class Paint {
 
         vector<Tool*> tools;
 
-        const char* paintName = "Unnamed";
+        string paintName = "Unnamed";
 
     public:
         bool fileSystemInit = false;
@@ -72,8 +73,8 @@ class Paint {
         void drawPaintName();
         void drawPaintIcon();
 
-        const char* getPaintName();
-        void setPaintName(const char* name);
+        string getPaintName();
+        void setPaintName(string name);
 
         u16 getThemeColor(int theme);
         u16 getSelectedThemeColor();

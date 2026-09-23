@@ -1,5 +1,9 @@
 #pragma once
 
+#include <string>
+
+using namespace std;
+
 #include "tool.h"
 
 class Saving : public Tool {
@@ -10,7 +14,7 @@ class Saving : public Tool {
         bool saving = false;
         bool savingExport = false;
         int doneTimer = 0;
-        const char* pawName = "Unnamed";
+        string pawName = "Unnamed";
         bool updateDrawTool = true;
 
         virtual ~Saving() {} 

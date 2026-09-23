@@ -1,7 +1,5 @@
 #include "paint.h"
 
-#include <string>
-
 #include "language.h"
 #include "pawscript.h"
 
@@ -220,7 +218,7 @@ void Paint::drawHints() {
 
 void Paint::drawPaintName() {
     clearBuffer(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH, 12, pixelBufferMain);
-    drawText(3, SCREEN_HEIGHT - 46, getPaintName(), pixelBufferMain, blackColor);
+    drawText(3, SCREEN_HEIGHT - 46, getPaintName().c_str(), pixelBufferMain, blackColor);
 }
 
 void Paint::drawPaintIcon() {
@@ -228,11 +226,11 @@ void Paint::drawPaintIcon() {
     drawSprite(SCREEN_WIDTH - 32 - 3, SCREEN_HEIGHT - 32 - 3, 32, 32, getSelectedIconSprite(), pixelBufferMain);
 }
 
-const char* Paint::getPaintName() {
+string Paint::getPaintName() {
     return paintName;
 }
 
-void Paint::setPaintName(const char* name) {
+void Paint::setPaintName(string name) {
     paintName = name;
 }
 
