@@ -31,11 +31,7 @@ class Paint {
 
         vector<Tool*> tools;
 
-        string paintName = "Unnamed";
-
     public:
-        bool fileSystemInit = false;
-
         int cursorX = 0;
         int cursorY = 0;
         int cursorXOld = 0;
@@ -45,7 +41,6 @@ class Paint {
 
         int selectedTheme = 0;
         int selectedIcon = 0;
-        int selectedLanguage = 0;
         int selectedLayer = 0;
         int selectedTool = 0;
         u16 selectedColor = blackColor;
@@ -55,7 +50,6 @@ class Paint {
         bool updateDrawTools = true;
         bool updateDrawColors = true;
         bool updateDrawHints = true;
-        bool updateDrawPaintName = true;
         bool updateDrawPaintIcon = true;
 
         void setup();
@@ -70,20 +64,13 @@ class Paint {
         void drawTools();
         void drawColors();
         void drawHints();
-        void drawPaintName();
         void drawPaintIcon();
-
-        string getPaintName();
-        void setPaintName(string name);
 
         u16 getThemeColor(int theme);
         u16 getSelectedThemeColor();
 
         const unsigned int* getIconSprite(int icon);
         const unsigned int* getSelectedIconSprite();
-
-        const char* getLanguageCode(int language);
-        const char* getSelectedLanguageCode();
 
         u16 getSelectedColor();
         u16 getSecondColor();
@@ -145,6 +132,4 @@ class Paint {
         int getTextLength(const char* text);
 
         int getDitherThreshold(int x, int y, int xSize, int ySize, int xShift, int yShift);
-
-        bool readSelectedLanguage();
 };

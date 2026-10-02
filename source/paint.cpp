@@ -32,13 +32,11 @@ void Paint::setup() {
     updateDrawTools = true;
     updateDrawColors = true;
     updateDrawHints = true;
-    updateDrawPaintName = true;
     updateDrawPaintIcon = true;
 
     setRepeat(10, 2);
 
-    readSelectedLanguage();
-    setPaintName(STR_UNNAMED.c_str());
+    readLanguage();
 }
 
 void Paint::setupVideo() {
@@ -122,7 +120,6 @@ void Paint::updateTools() {
         updateDrawTools = true;
         updateDrawColors = true;
         updateDrawHints = true;
-        updateDrawPaintName = true;
         updateDrawPaintIcon = true;
         updateDrawAll = false;
         tools[selectedTool]->redraw(*this);
@@ -146,11 +143,6 @@ void Paint::updateVideo() {
         if (updateDrawHints) {
             drawHints();
             updateDrawHints = false;
-        }
-
-        if (updateDrawPaintName) {
-            drawPaintName();
-            updateDrawPaintName = false;
         }
 
         if (updateDrawPaintIcon) {
@@ -216,22 +208,9 @@ void Paint::drawHints() {
     tools[selectedTool]->drawHints(*this, xOffset, yOffset, pixelBufferMain);
 }
 
-void Paint::drawPaintName() {
-    clearBuffer(0, SCREEN_HEIGHT - 49, SCREEN_WIDTH, 12, pixelBufferMain);
-    drawText(3, SCREEN_HEIGHT - 46, getPaintName().c_str(), pixelBufferMain, blackColor);
-}
-
 void Paint::drawPaintIcon() {
     clearBuffer(SCREEN_WIDTH - 32 - 3, SCREEN_HEIGHT - 32 - 3, 32, 32, pixelBufferMain);
     drawSprite(SCREEN_WIDTH - 32 - 3, SCREEN_HEIGHT - 32 - 3, 32, 32, getSelectedIconSprite(), pixelBufferMain);
-}
-
-string Paint::getPaintName() {
-    return paintName;
-}
-
-void Paint::setPaintName(string name) {
-    paintName = name;
 }
 
 u16 Paint::getThemeColor(int theme) {
@@ -258,17 +237,6 @@ const unsigned int* Paint::getIconSprite(int icon) {
 
 const unsigned int* Paint::getSelectedIconSprite() {
 	return getIconSprite(selectedIcon);
-}
-
-const char* Paint::getLanguageCode(int language) {
-    if (language >= 0 && language < (int) sizeof(languageCodes)) {
-        return languageCodes[language];
-    }
-	return "en_us";
-}
-
-const char* Paint::getSelectedLanguageCode() {
-	return getLanguageCode(selectedLanguage);
 }
 
 u16 Paint::getSelectedColor() {
@@ -444,96 +412,11 @@ void Paint::drawLine(int x0, int y0, int x1, int y1, u16* buffer, u16 color) {
 void Paint::drawChar(int x, int y, u32 c, u16* buffer, u16 color) {
     const u16* pixels = (const u16*) pawscript_font_asciiBitmap;
     int index = (int) c;
-    bool extended = false;
 
-    if (c >= 0x00C0 && c <= 0x017F) {
-        int latinSize = sizeof(pawscriptLatinList) / sizeof(pawscriptLatinList[0]);
-        for (int i = 0; i < latinSize; i++) {
-            if (c == pawscriptLatinList[i]) {
-                index = i;
-                break;
-            }
-        }
-        int latinExtendedSize = sizeof(pawscriptLatinExtendedList) / sizeof(pawscriptLatinExtendedList[0]);
-        for (int i = 0; i < latinExtendedSize; i++) {
-            if (c == pawscriptLatinExtendedList[i]) {
-                index = i;
-                extended = true;
-                break;
-            }
-        }
-        
-        if (extended) {
-            pixels = (const u16*) pawscript_font_latin_extendedBitmap;
-        } else {
-            pixels = (const u16*) pawscript_font_latinBitmap;
-        }
-    }
-
-    if (c >= 0x0370 && c <= 0x03FF) {
-        int greekSize = sizeof(pawscriptGreekList) / sizeof(pawscriptGreekList[0]);
-        for (int i = 0; i < greekSize; i++) {
-            if (c == pawscriptGreekList[i]) {
-                index = i;
-                break;
-            }
-        }
-        int greekExtendedSize = sizeof(pawscriptGreekExtendedList) / sizeof(pawscriptGreekExtendedList[0]);
-        for (int i = 0; i < greekExtendedSize; i++) {
-            if (c == pawscriptGreekExtendedList[i]) {
-                index = i;
-                extended = true;
-                break;
-            }
-        }
-        
-        if (extended) {
-            pixels = (const u16*) pawscript_font_greek_extendedBitmap;
-        } else {
-            pixels = (const u16*) pawscript_font_greekBitmap;
-        }
-    }
-
-    if (c >= 0x0400 && c <= 0x04FF) {
-        int cyrillicSize = sizeof(pawscriptCyrillicList) / sizeof(pawscriptCyrillicList[0]);
-        for (int i = 0; i < cyrillicSize; i++) {
-            if (c == pawscriptCyrillicList[i]) {
-                index = i;
-                break;
-            }
-        }
-        int cyrillicExtendedSize = sizeof(pawscriptCyrillicExtendedList) / sizeof(pawscriptCyrillicExtendedList[0]);
-        for (int i = 0; i < cyrillicExtendedSize; i++) {
-            if (c == pawscriptCyrillicExtendedList[i]) {
-                index = i;
-                extended = true;
-                break;
-            }
-        }
-
-        if (extended) {
-            pixels = (const u16*) pawscript_font_cyrillic_extendedBitmap;
-        } else {
-            pixels = (const u16*) pawscript_font_cyrillicBitmap;
-        }
-    }
-
-    if (c >= 0x0590 && c <= 0x05FF) {
-        int hebrewSize = sizeof(pawscriptHebrewList) / sizeof(pawscriptHebrewList[0]);
-        for (int i = 0; i < hebrewSize; i++) {
-            if (c == pawscriptHebrewList[i]) {
-                index = i;
-                break;
-            }
-        }
-
-        pixels = (const u16*) pawscript_font_hebrewBitmap;
-    }
-
-    int xSize = extended ? 9 : 8;
-    int ySize = extended ? 12 : 8;
-    int spriteWidth = extended ? 144 : 128;
-    int yOffset = extended ? 3 : 0;
+    int xSize = 8;
+    int ySize = 8;
+    int spriteWidth = 128;
+    int yOffset = 0;
 
     for (int row = 0; row < ySize; row++) {
         for (int col = 0; col < xSize; col++) {
@@ -789,9 +672,4 @@ int Paint::getDitherThreshold(int x, int y, int xSize, int ySize, int xShift, in
     int xOffset = ((y / ySize) % 2 == 1) ? xShift : 0;
     int yOffset = ((x / xSize) % 2 == 1) ? yShift : 0;
     return ((x + xOffset) % xSize) + ((y + yOffset) % ySize);
-}
-
-bool Paint::readSelectedLanguage() {
-    //string path = string("languagesPath") + "/" + getSelectedLanguageCode() + ".ini";
-    return readLanguage("");
 }

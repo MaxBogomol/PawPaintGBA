@@ -41,7 +41,6 @@ void Info::update(Paint& paint) {
         if (keysD & KEY_A) {
             showPage = false;
             updateDrawTool = true;
-            paint.updateDrawPaintName = true;
             paint.updateDrawHints = true;
         }
     }
@@ -64,7 +63,6 @@ void Info::close(Paint& paint) {
     int bOffset = paint.getToolsButtonsOffset();
     paint.clearBuffer(0, yOffset - 3, SCREEN_WIDTH, 4 * 13 + 3, pixelBufferMain);
     paint.clearBuffer(SCREEN_WIDTH - bOffset - 72, yOffset + 10, 72, 72, pixelBufferMain);
-    paint.updateDrawPaintName = true;
 }
 
 void Info::redraw(Paint& paint) {

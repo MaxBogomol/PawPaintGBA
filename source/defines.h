@@ -30,18 +30,8 @@ inline int keysU;
 
 inline const char* paintVerstion = "v0.1";
 
-inline int maxLanguages = 6;
 inline int maxPaintThemes = 4;
 inline int maxPaintIcons = 2;
-
-inline const char* languageCodes[6] = {
-    "en_us",
-    "ru_ru",
-    "be_by",
-    "be_tar",
-    "be_by_latn",
-    "be_tar_latn"
-};
 
 struct HSV {
     int h;

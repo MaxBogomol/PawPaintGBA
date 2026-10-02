@@ -22,7 +22,7 @@ void Settings::update(Paint& paint) {
         updateTheme = false;
     }
 
-    int maxLine = 4;
+    int maxLine = 3;
 
     if ((keysD & KEY_UP) && (line - 1 >= 0)) {
         line--;
@@ -67,27 +67,9 @@ void Settings::update(Paint& paint) {
             break;
         }
         case 2: {
-            if (keysD & KEY_LEFT) {
-                paint.selectedLanguage--;
-                if (paint.selectedLanguage < 0) paint.selectedLanguage = maxLanguages - 1;
-                paint.updateDrawTools = true;
-                updateTheme = true;
-                paint.readSelectedLanguage();
-            }
-            if (keysD & KEY_RIGHT) {
-                paint.selectedLanguage++;
-                if (paint.selectedLanguage > maxLanguages - 1) paint.selectedLanguage = 0;
-                paint.updateDrawTools = true;
-                updateTheme = true;
-                paint.readSelectedLanguage();
-            }
-            break;
-        }
-        case 3: {
             if (keysD & KEY_A) {
                 setDefaultSetting(paint);
                 paint.updateDrawAll = true;
-                paint.readSelectedLanguage();
             }
             break;
         }
@@ -140,10 +122,7 @@ void Settings::drawTool(Paint& paint) {
     string iconString = string((line == 1) ? ">" : "") + STR_SETTINGS_ICON + ": " + getIconName(paint, paint.selectedIcon);
     paint.drawText(3, yOffset += 13, iconString.c_str(), pixelBufferMain, blackColor);
 
-    string languageString = string((line == 2) ? ">" : "") + STR_SETTINGS_LANGUAGE + ": " + STR_LANGUAGE;
-    paint.drawText(3, yOffset += 13, languageString.c_str(), pixelBufferMain, paint.fileSystemInit ? blackColor : grayColor);
-
-    string defaultString = string((line == 3) ? ">" : "") + STR_SETTINGS_DEFAULT;
+    string defaultString = string((line == 2) ? ">" : "") + STR_SETTINGS_DEFAULT;
     paint.drawText(3, yOffset += 13, defaultString.c_str(), pixelBufferMain, blackColor);
 }
 
@@ -168,5 +147,4 @@ const char* Settings::getIconName(Paint& paint, int icon) {
 void Settings::setDefaultSetting(Paint& paint) {
     paint.selectedTheme = 0;
     paint.selectedIcon = 0;
-    paint.selectedLanguage = 0;
 }

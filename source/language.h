@@ -8,4 +8,4 @@ using namespace std;
 #include "language.inl"
 #undef STRING
 
-bool readLanguage(const char* path);
+bool readLanguage();

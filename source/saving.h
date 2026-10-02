@@ -9,12 +9,9 @@ using namespace std;
 class Saving : public Tool {
     public:
         int line = 0;
-        int lineOffset = 0;
         bool loading = false;
         bool saving = false;
-        bool savingExport = false;
         int doneTimer = 0;
-        string pawName = "Unnamed";
         bool updateDrawTool = true;
 
         virtual ~Saving() {} 
