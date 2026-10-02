@@ -2,8 +2,6 @@
 #endif
 
 //General
-STRING(LANGUAGE, "English");
-STRING(UNNAMED, "Unnamed");
 STRING(DESCRIPTION, "Paint with your paws on Game Boy Advance");
 
 //Themes
@@ -37,17 +35,12 @@ STRING(EYEDROPPER, "Eyedropper");
 STRING(COLOR_PICKER, "Color Picker");
 STRING(COLOR_PICKER_COLOR, "Color");
 STRING(SAVING, "Saving");
-STRING(SAVING_RENAME, "Rename");
 STRING(SAVING_NEW, "New");
 STRING(SAVING_LOAD, "Load");
 STRING(SAVING_SAVE, "Save");
-STRING(SAVING_SAVE_AS, "Save As");
-STRING(SAVING_EXPORT, "Export");
-STRING(SAVING_EXPORT_AS, "Export As");
 STRING(SETTINGS, "Settings");
 STRING(SETTINGS_THEME, "Theme");
 STRING(SETTINGS_ICON, "Icon");
-STRING(SETTINGS_LANGUAGE, "Language");
 STRING(SETTINGS_DEFAULT, "Default");
 STRING(INFO, "Info");
 STRING(INFO_ABOUT, "About App");
