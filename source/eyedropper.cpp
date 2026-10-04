@@ -10,13 +10,6 @@ const char* Eyedropper::getName(Paint& paint) {
 }
 
 void Eyedropper::setup(Paint& paint) {
-    line = 0;
-    cursorX = 0;
-    cursorY = 0;
-    cursorXOld = 0;
-    cursorYOld = 0;
-    active = false;
-    updateDrawTool = true;
     updateDrawCursor = false;
 }
 
@@ -29,54 +22,42 @@ void Eyedropper::update(Paint& paint) {
     }
 
     if (paint.reverseScreens) {
-        if ((keysR & KEY_LEFT) && (cursorX - 1 >= 0)) {
-            cursorX--;
+        if ((keysR & KEY_LEFT) && (paint.cursorX - 1 >= 0)) {
+            paint.cursorX--;
             updateDrawCursor = true;
         }
-        if ((keysR & KEY_RIGHT) && (cursorX + 1 < SCREEN_WIDTH)) {
-            cursorX++;
+        if ((keysR & KEY_RIGHT) && (paint.cursorX + 1 < SCREEN_WIDTH)) {
+            paint.cursorX++;
             updateDrawCursor = true;
         }
-        if ((keysR & KEY_UP) && (cursorY - 1 >= 0)) {
-            cursorY--;
+        if ((keysR & KEY_UP) && (paint.cursorY - 1 >= 0)) {
+            paint.cursorY--;
             updateDrawCursor = true;
         }
-        if ((keysR & KEY_DOWN) && (cursorY + 1 < SCREEN_HEIGHT)) {
-            cursorY++;
+        if ((keysR & KEY_DOWN) && (paint.cursorY + 1 < SCREEN_HEIGHT)) {
+            paint.cursorY++;
             updateDrawCursor = true;
         }
         if (keysH & KEY_A) {
-            u16 color = paint.getPixel(cursorX, cursorY, pixelBufferCanvas);
+            u16 color = paint.getPixel(paint.cursorX, paint.cursorY, pixelBufferCanvas);
             if (((color >> 15) & 1) == 0) color = blackColor;
             paint.selectedColor = color;
             paint.updateDrawColors = true;
         }
-    }
 
-    if (updateDrawCursor) {
-        drawCursor(paint);
-        updateDrawCursor = false;
+        if (updateDrawCursor) {
+            drawCursor(paint);
+            updateDrawCursor = false;
+        }
     }
 }
 
 void Eyedropper::open(Paint& paint) {
-    line = 0;
-    active = false;
-    updateDrawTool = true;
     updateDrawCursor = false;
-}
-
-void Eyedropper::close(Paint& paint) {
-    active = false;
-    drawCursor(paint);
 }
 
 void Eyedropper::reverse(Paint& paint) {
     updateDrawCursor = true;
-}
-
-void Eyedropper::redraw(Paint& paint) {
-    updateDrawTool = true;
 }
 
 void Eyedropper::drawIcon(Paint& paint, int x, int y, u16* buffer) {
@@ -90,14 +71,14 @@ void Eyedropper::drawHints(Paint& paint, int x, int y, u16* buffer) {
 }
 
 void Eyedropper::drawCursor(Paint& paint, bool clear) {
-    paint.blendLayers(cursorXOld - 2, cursorYOld - 2, 5, 5);
+    paint.blendLayers(paint.cursorXOld - 2, paint.cursorYOld - 2, 5, 5);
     if (!clear) {
-        paint.drawSquareOutline(cursorX - 2, cursorY - 2, 5, 5, pixelBufferMain, blackColor);
-        paint.drawSquareOutline(cursorX - 1, cursorY - 1, 3, 3, pixelBufferMain, whiteColor);
+        paint.drawSquareOutline(paint.cursorX - 2, paint.cursorY - 2, 5, 5, pixelBufferMain, blackColor);
+        paint.drawSquareOutline(paint.cursorX - 1, paint.cursorY - 1, 3, 3, pixelBufferMain, whiteColor);
     }
 
-    cursorXOld = cursorX;
-    cursorYOld = cursorY;
+    paint.cursorXOld = paint.cursorX;
+    paint.cursorYOld = paint.cursorY;
 }
 
 void Eyedropper::drawCursor(Paint& paint) {
